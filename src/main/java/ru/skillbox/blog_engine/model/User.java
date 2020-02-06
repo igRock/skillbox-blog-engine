@@ -1,6 +1,5 @@
 package ru.skillbox.blog_engine.model;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -25,6 +24,9 @@ public class User {
     private String email;
     private String password;
     private String code;
+
+    @Column(length = 65535, columnDefinition="TEXT")
+    @Type(type="text")
     private String photo;
 
     public int getId() {

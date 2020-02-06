@@ -19,7 +19,7 @@ public class Post {
     private boolean isActive;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "enum", name = "moderation_status")
+    @Column(columnDefinition = "ENUM('NEW', 'ACCEPTED', 'DECLINED')", name = "moderation_status")
     private ModerationStatus moderationStatus;
 
     @ManyToOne(cascade = CascadeType.ALL)

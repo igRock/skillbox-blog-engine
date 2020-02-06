@@ -17,6 +17,7 @@ public class PostVote {
     private Post post;
 
     private LocalDateTime time;
+
     private int value;
 
     public int getId() {
