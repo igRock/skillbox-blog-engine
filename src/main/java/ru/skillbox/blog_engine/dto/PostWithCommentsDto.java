@@ -1,32 +1,33 @@
 package ru.skillbox.blog_engine.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostWithCommentsDto {
-    private int id;
-    private String time;
+    private Integer id;
+    private LocalDateTime time;
     private UserDto user;
     private String title;
     private String text;
-    private int likeCount;
-    private int dislikeCount;
-    private int viewCount;
+    private Long likeCount;
+    private Long dislikeCount;
+    private Integer viewCount;
     private List<CommentDto> comments;
     private List<String> tags;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 
@@ -54,27 +55,27 @@ public class PostWithCommentsDto {
         this.text = text;
     }
 
-    public int getLikeCount() {
+    public Long getLikeCount() {
         return likeCount;
     }
 
-    public void setLikeCount(int likeCount) {
+    public void setLikeCount(Long likeCount) {
         this.likeCount = likeCount;
     }
 
-    public int getDislikeCount() {
+    public Long getDislikeCount() {
         return dislikeCount;
     }
 
-    public void setDislikeCount(int dislikeCount) {
+    public void setDislikeCount(Long dislikeCount) {
         this.dislikeCount = dislikeCount;
     }
 
-    public int getViewCount() {
+    public Integer getViewCount() {
         return viewCount;
     }
 
-    public void setViewCount(int viewCount) {
+    public void setViewCount(Integer viewCount) {
         this.viewCount = viewCount;
     }
 

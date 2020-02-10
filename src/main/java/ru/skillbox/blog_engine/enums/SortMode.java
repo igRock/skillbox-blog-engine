@@ -1,6 +1,6 @@
 package ru.skillbox.blog_engine.enums;
 
-public enum Mode {
+public enum SortMode {
     RECENT,
     POPULAR,
     BEST,

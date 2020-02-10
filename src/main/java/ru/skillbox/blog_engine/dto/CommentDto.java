@@ -1,24 +1,26 @@
 package ru.skillbox.blog_engine.dto;
 
+import java.time.LocalDateTime;
+
 public class CommentDto {
-    private int id;
-    private String time;
+    private Integer id;
+    private LocalDateTime time;
     private UserWithPhotoDto user;
     private String text;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

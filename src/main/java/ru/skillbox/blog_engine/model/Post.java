@@ -40,6 +40,12 @@ public class Post {
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private List<Tag> tags;
 
+    @OneToMany(mappedBy = "post")
+    private List<PostVote> postVotes;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostComment> postComments;
+
     public int getId() {
         return id;
     }
@@ -110,5 +116,21 @@ public class Post {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public List<PostVote> getPostVotes() {
+        return postVotes;
+    }
+
+    public void setPostVotes(List<PostVote> postVotes) {
+        this.postVotes = postVotes;
+    }
+
+    public List<PostComment> getPostComments() {
+        return postComments;
+    }
+
+    public void setPostComments(List<PostComment> postComments) {
+        this.postComments = postComments;
     }
 }

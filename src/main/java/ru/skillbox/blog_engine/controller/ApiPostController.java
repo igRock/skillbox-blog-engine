@@ -1,54 +1,85 @@
 package ru.skillbox.blog_engine.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.blog_engine.dto.PostRequest;
-import ru.skillbox.blog_engine.dto.PostWithCommentsDto;
-import ru.skillbox.blog_engine.dto.PostsResponse;
-import ru.skillbox.blog_engine.dto.ResultResponse;
-import ru.skillbox.blog_engine.enums.Mode;
+import ru.skillbox.blog_engine.dto.*;
 import ru.skillbox.blog_engine.enums.ModerationStatus;
 import ru.skillbox.blog_engine.enums.Status;
-import ru.skillbox.blog_engine.repository.PostRepository;
+import ru.skillbox.blog_engine.services.PostService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 public class ApiPostController {
-    @Autowired
-    private PostRepository postRepository;
+    DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @GetMapping("/api/post/")
-    public PostsResponse getPosts(@RequestParam Integer offset,
-                                  @RequestParam Integer limit,
-                                  @RequestParam Mode mode) {
-        return null;
+    private PostService postService;
+
+    public ApiPostController(PostService postService) {
+        this.postService = postService;
     }
 
-    @GetMapping("/api/post/search/")
+    @GetMapping("/api/post")
+    public PostsResponse getPosts(@RequestParam Integer offset,
+                                  @RequestParam Integer limit,
+                                  @RequestParam String mode) {
+
+        PostsResponse postsResponse = new PostsResponse();
+
+        List<PlainPostDto> plainPostDtoList = postService.getAllPosts();
+
+        postsResponse.setCount(plainPostDtoList.size());
+        postsResponse.setPosts(postService.sortByMode(postService.offsetList(offset, limit, plainPostDtoList), mode));
+        return postsResponse;
+    }
+
+    @GetMapping("/api/post/search")
     public PostsResponse getPostsByQuery(@RequestParam Integer offset,
                                          @RequestParam Integer limit,
                                          @RequestParam String query) {
-        return null;
+
+        PostsResponse postsResponse = new PostsResponse();
+
+        List<PlainPostDto> plainPostDtoList = postService.searchByQuery(postService.getAllPosts(), query);
+        postsResponse.setCount(plainPostDtoList.size());
+        postsResponse.setPosts(postService.offsetList(offset, limit, plainPostDtoList));
+
+        return postsResponse;
     }
 
     @GetMapping("/api/post/{id}")
-    public PostWithCommentsDto getPostById(@PathVariable String id) {
-        return null;
+    public PostWithCommentsDto getPostById(@PathVariable Integer id) {
+        return postService.getPostWithCommentsById(id);
     }
 
     @GetMapping("/api/post/byDate")
     public PostsResponse getPostsByDate(@RequestParam Integer offset,
                                         @RequestParam Integer limit,
-                                        @RequestParam LocalDate date) {
-        return null;
+                                        @RequestParam String date) {
+
+        PostsResponse postsResponse = new PostsResponse();
+
+        List<PlainPostDto> plainPostDtoList = postService.searchByDate(postService.getAllPosts(),
+                LocalDateTime.parse(date, DATEFORMATTER));
+        postsResponse.setCount(plainPostDtoList.size());
+        postsResponse.setPosts(postService.offsetList(offset, limit, plainPostDtoList));
+
+        return postsResponse;
     }
 
     @GetMapping("/api/post/byTag")
     public PostsResponse getPostsByTag(@RequestParam Integer offset,
                                        @RequestParam Integer limit,
                                        @RequestParam String tag) {
-        return null;
+
+        PostsResponse postsResponse = new PostsResponse();
+
+        List<PlainPostDto> plainPostDtoList = postService.searchByTag(postService.getAllPosts(), tag);
+        postsResponse.setCount(plainPostDtoList.size());
+        postsResponse.setPosts(postService.offsetList(offset, limit, plainPostDtoList));
+
+        return postsResponse;
     }
 
     //ИЗМЕНИТЬ ФОРМАТ ОТВЕТА, ОТНАСЛЕДОВАТЬ
