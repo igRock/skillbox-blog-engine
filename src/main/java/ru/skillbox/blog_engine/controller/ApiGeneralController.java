@@ -5,36 +5,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skillbox.blog_engine.dto.ApiInitResponse;
-import ru.skillbox.blog_engine.dto.ModerationRequest;
-import ru.skillbox.blog_engine.dto.ResultResponse;
-import ru.skillbox.blog_engine.dto.TagsResponse;
+import ru.skillbox.blog_engine.dto.*;
 import ru.skillbox.blog_engine.services.ResponseService;
+import ru.skillbox.blog_engine.services.StorageService;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 
 public class ApiGeneralController {
+    DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
 
     @Autowired
     private ResponseService responseService;
+    @Autowired
+    private StorageService storageService;
 
     @GetMapping("/api/init")
     public ApiInitResponse getApiInit() {
-        ApiInitResponse response = new ApiInitResponse();
-        response.setCopyright("Топчий Григорий");
-        response.setCopyrightFrom("2020");
-        response.setEmail("greg0piii@mail.ru");
-        response.setPhone("+79056655876");
-        response.setSubtitle("SubTitle");
-        response.setTitle("Title");
-        return response;
+        return responseService.getApiInitResponse();
     }
 
     @PostMapping("/api/image")
     public String postImage(@RequestParam("image") MultipartFile image) {
-//        String filePath = request.getServletContext().getRealPath("/");
-//        multipartFile.transferTo(new File(filePath));
-        return null;
+        return storageService.store(image);
     }
 
     @GetMapping("/api/tag")
@@ -47,9 +42,9 @@ public class ApiGeneralController {
         return null;
     }
 
-    // ЗАМЕНИТЬ ФОРМАТ ОТВЕТА
-    @GetMapping("/api/calendar/")
-    public String getCalendar(@RequestParam String year) {
-        return null;
+    @GetMapping("/api/calendar")
+    public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year) {
+        return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.parse(year, YEAR_FORMATTER)),
+                HttpStatus.OK);
     }
 }

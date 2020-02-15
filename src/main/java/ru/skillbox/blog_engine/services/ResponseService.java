@@ -2,13 +2,13 @@ package ru.skillbox.blog_engine.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.skillbox.blog_engine.Main;
 import ru.skillbox.blog_engine.dto.*;
 import ru.skillbox.blog_engine.model.Post;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +32,8 @@ public class ResponseService {
             postList = postService.searchByQuery(postList, searchQuery);
         }
         if (ldt != null) {
-            postList = postService.searchByDate(postList, ldt);
+            LocalDateTime dateTo = ldt.plusDays(1).minusSeconds(1);
+            postList = postService.searchByDate(postList, ldt, dateTo);
         }
         if (tag != null) {
             postList = postService.searchByTag(postList, tag);
@@ -55,6 +56,32 @@ public class ResponseService {
         TagsResponse tagsResponse = new TagsResponse();
         tagsResponse.setTags(tagDtoList);
         return tagsResponse;
+    }
+
+    public CalendarResponse getCalendarResponse(LocalDateTime year) {
+        List<Post> allPostList = postService.getAllPostsFromRepository(true);
+        List<Post> postList = postService.searchByDate(allPostList, year, LocalDateTime.now());
+        Map<String, Long> postsCountPerYear = postList.stream()
+                .collect(Collectors.groupingBy(p -> p.getTime().toString().split(" ")[0],
+                        Collectors.counting()));
+        List<Integer> postYears = postList.stream()
+                .map(p -> p.getTime().getYear())
+                .collect(Collectors.toList());
+        CalendarResponse calendarResponse = new CalendarResponse();
+        calendarResponse.setYears(postYears);
+        calendarResponse.setPosts(postsCountPerYear);
+        return calendarResponse;
+    }
+
+    public ApiInitResponse getApiInitResponse() {
+        ApiInitResponse response = new ApiInitResponse();
+        response.setCopyright("Топчий Григорий");
+        response.setCopyrightFrom("2020");
+        response.setEmail("greg0piii@mail.ru");
+        response.setPhone("+79056655876");
+        response.setSubtitle("SubTitle");
+        response.setTitle("Title");
+        return response;
     }
 
     private PostsResponse formPostsResponse(Integer offset, Integer limit, List<PlainPostDto> posts) {

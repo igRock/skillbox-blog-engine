@@ -54,10 +54,10 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<Post> searchByDate(List<Post> list, LocalDateTime date) {
+    public List<Post> searchByDate(List<Post> list, LocalDateTime dateFrom, LocalDateTime dateTo) {
         return list.stream()
-                .filter(post -> post.getTime().isAfter(date) &&
-                        post.getTime().isBefore(date.plusDays(1).minusSeconds(1)))
+                .filter(post -> post.getTime().isAfter(dateFrom) &&
+                        post.getTime().isBefore(dateTo))
                 .collect(Collectors.toList());
     }
 

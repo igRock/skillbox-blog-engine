@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 public class ApiPostController {
-    DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private ResponseService responseService;
@@ -48,7 +48,7 @@ public class ApiPostController {
                                         @RequestParam Integer limit,
                                         @RequestParam String date) {
         return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, null,
-                null, LocalDateTime.parse(date, DATEFORMATTER), null), HttpStatus.OK);
+                null, LocalDateTime.parse(date, DATE_FORMATTER), null), HttpStatus.OK);
     }
 
     @GetMapping("/api/post/byTag")
