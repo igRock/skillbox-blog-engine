@@ -1,15 +1,22 @@
 package ru.skillbox.blog_engine.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.blog_engine.dto.ApiInitResponse;
 import ru.skillbox.blog_engine.dto.ModerationRequest;
 import ru.skillbox.blog_engine.dto.ResultResponse;
-
-import java.io.File;
+import ru.skillbox.blog_engine.dto.TagsResponse;
+import ru.skillbox.blog_engine.services.ResponseService;
 
 @RestController
 
 public class ApiGeneralController {
+
+    @Autowired
+    private ResponseService responseService;
 
     @GetMapping("/api/init")
     public ApiInitResponse getApiInit() {
@@ -23,15 +30,16 @@ public class ApiGeneralController {
         return response;
     }
 
-    // ИЗМЕНИТЬ ТЕЛО ЗАПРОСА]
     @PostMapping("/api/image")
-    public String postImage(@RequestBody File image) {
+    public String postImage(@RequestParam("image") MultipartFile image) {
+//        String filePath = request.getServletContext().getRealPath("/");
+//        multipartFile.transferTo(new File(filePath));
         return null;
     }
 
-    @GetMapping("/api/tag/")
-    public String getTags(@RequestParam String query) {
-        return null;
+    @GetMapping("/api/tag")
+    public ResponseEntity<TagsResponse> getTags(@RequestParam String query) {
+        return new ResponseEntity<>(responseService.getTagsResponse(query), HttpStatus.OK);
     }
 
     @PostMapping("/api/moderation")

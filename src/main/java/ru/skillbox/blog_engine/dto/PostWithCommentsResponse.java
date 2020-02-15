@@ -3,7 +3,7 @@ package ru.skillbox.blog_engine.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class PostWithCommentsDto {
+public class PostWithCommentsResponse {
     private Integer id;
     private LocalDateTime time;
     private UserDto user;

@@ -1,5 +1,7 @@
 package ru.skillbox.blog_engine.model;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,6 +23,10 @@ public class PostComment {
     private User user;
 
     private LocalDateTime time;
+
+    @Column(length = 65535, columnDefinition="TEXT")
+    @Type(type="text")
+    private String text;
 
     public int getId() {
         return id;
@@ -60,5 +66,13 @@ public class PostComment {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

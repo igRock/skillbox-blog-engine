@@ -1,97 +1,74 @@
 package ru.skillbox.blog_engine.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.blog_engine.dto.*;
+import ru.skillbox.blog_engine.dto.PostRequest;
+import ru.skillbox.blog_engine.dto.PostWithCommentsResponse;
+import ru.skillbox.blog_engine.dto.PostsResponse;
+import ru.skillbox.blog_engine.dto.ResultResponse;
 import ru.skillbox.blog_engine.enums.ModerationStatus;
 import ru.skillbox.blog_engine.enums.Status;
-import ru.skillbox.blog_engine.services.PostService;
+import ru.skillbox.blog_engine.services.ResponseService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @RestController
 public class ApiPostController {
     DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    private PostService postService;
-
-    public ApiPostController(PostService postService) {
-        this.postService = postService;
-    }
+    @Autowired
+    private ResponseService responseService;
 
     @GetMapping("/api/post")
-    public PostsResponse getPosts(@RequestParam Integer offset,
+    public ResponseEntity<PostsResponse> getPosts(@RequestParam Integer offset,
                                   @RequestParam Integer limit,
                                   @RequestParam String mode) {
-
-        PostsResponse postsResponse = new PostsResponse();
-
-        List<PlainPostDto> plainPostDtoList = postService.getAllPosts();
-
-        postsResponse.setCount(plainPostDtoList.size());
-        postsResponse.setPosts(postService.sortByMode(postService.offsetList(offset, limit, plainPostDtoList), mode));
-        return postsResponse;
+        return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, mode,
+                null, null, null), HttpStatus.OK);
     }
 
     @GetMapping("/api/post/search")
-    public PostsResponse getPostsByQuery(@RequestParam Integer offset,
+    public ResponseEntity<PostsResponse> getPostsByQuery(@RequestParam Integer offset,
                                          @RequestParam Integer limit,
                                          @RequestParam String query) {
-
-        PostsResponse postsResponse = new PostsResponse();
-
-        List<PlainPostDto> plainPostDtoList = postService.searchByQuery(postService.getAllPosts(), query);
-        postsResponse.setCount(plainPostDtoList.size());
-        postsResponse.setPosts(postService.offsetList(offset, limit, plainPostDtoList));
-
-        return postsResponse;
+        return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, null, query,
+                null, null), HttpStatus.OK);
     }
 
     @GetMapping("/api/post/{id}")
-    public PostWithCommentsDto getPostById(@PathVariable Integer id) {
-        return postService.getPostWithCommentsById(id);
+    public ResponseEntity<PostWithCommentsResponse> getPostById(@PathVariable Integer id) {
+        return new ResponseEntity<>(responseService.getPostWithCommentsResponse(id), HttpStatus.OK);
     }
 
     @GetMapping("/api/post/byDate")
-    public PostsResponse getPostsByDate(@RequestParam Integer offset,
+    public ResponseEntity<PostsResponse> getPostsByDate(@RequestParam Integer offset,
                                         @RequestParam Integer limit,
                                         @RequestParam String date) {
-
-        PostsResponse postsResponse = new PostsResponse();
-
-        List<PlainPostDto> plainPostDtoList = postService.searchByDate(postService.getAllPosts(),
-                LocalDateTime.parse(date, DATEFORMATTER));
-        postsResponse.setCount(plainPostDtoList.size());
-        postsResponse.setPosts(postService.offsetList(offset, limit, plainPostDtoList));
-
-        return postsResponse;
+        return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, null,
+                null, LocalDateTime.parse(date, DATEFORMATTER), null), HttpStatus.OK);
     }
 
     @GetMapping("/api/post/byTag")
-    public PostsResponse getPostsByTag(@RequestParam Integer offset,
+    public ResponseEntity<PostsResponse> getPostsByTag(@RequestParam Integer offset,
                                        @RequestParam Integer limit,
                                        @RequestParam String tag) {
-
-        PostsResponse postsResponse = new PostsResponse();
-
-        List<PlainPostDto> plainPostDtoList = postService.searchByTag(postService.getAllPosts(), tag);
-        postsResponse.setCount(plainPostDtoList.size());
-        postsResponse.setPosts(postService.offsetList(offset, limit, plainPostDtoList));
-
-        return postsResponse;
+        return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, null,
+                null, null, tag), HttpStatus.OK);
     }
 
     //ИЗМЕНИТЬ ФОРМАТ ОТВЕТА, ОТНАСЛЕДОВАТЬ
     @GetMapping("/api/post/moderation")
-    public PostsResponse getPostsModeration(@RequestParam Integer offset,
+    public ResponseEntity<PostsResponse> getPostsModeration(@RequestParam Integer offset,
                                             @RequestParam Integer limit,
                                             @RequestParam ModerationStatus status) {
         return null;
     }
 
     @GetMapping("/api/post/my")
-    public PostsResponse getMyPosts(@RequestParam Integer offset,
+    public ResponseEntity<PostsResponse> getMyPosts(@RequestParam Integer offset,
                                     @RequestParam Integer limit,
                                     @RequestParam Status status) {
         return null;
@@ -99,12 +76,12 @@ public class ApiPostController {
 
     // ФОРМАТ ОТВЕТА ПОМЕНЯТЬ
     @PostMapping("/api/post")
-    public ResultResponse addNewPost(@RequestBody PostRequest request) {
+    public ResponseEntity<ResultResponse> addNewPost(@RequestBody PostRequest request) {
         return null;
     }
 
     @PutMapping("/api/post/{id}")
-    public ResultResponse updatePostById(@PathVariable String id,
+    public ResponseEntity<ResultResponse> updatePostById(@PathVariable String id,
                                          @RequestBody PostRequest request) {
         return null;
     }
