@@ -28,8 +28,8 @@ public class ApiGeneralController {
     }
 
     @PostMapping("/api/image")
-    public String postImage(@RequestParam("image") MultipartFile image) {
-        return storageService.store(image);
+    public ResponseEntity<String> postImage(@RequestParam("image") MultipartFile image) {
+        return new ResponseEntity<>(storageService.store(image), HttpStatus.OK);
     }
 
     @GetMapping("/api/tag")
