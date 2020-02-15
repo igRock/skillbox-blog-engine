@@ -15,21 +15,14 @@ public class StorageService {
             .concat("/src/main/java/ru/skillbox/blog_engine");
 
     public String store(MultipartFile file){
-        String folder1 = generatePathPart();
-        String folder2 = generatePathPart();
-
-        File folderOne = new File(rootPath + "/upload/" + folder1);
-        folderOne.mkdir();
-        File folderTwo = new File(rootPath + "/upload/" + folder1 + "/" + folder2);
-        folderTwo.mkdir();
-
-        String path = "/upload/" + folder1 + "/" + folder2 + "/" + file.getOriginalFilename();
+        String absolutePathToFolder = "/upload/" + generatePathPart() + "/" + generatePathPart() + "/";
+        new File(rootPath + absolutePathToFolder).mkdirs();
+        String path = absolutePathToFolder + file.getOriginalFilename();
         try {
             Files.copy(file.getInputStream(), Paths.get(rootPath + path));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return path;
     }
 
