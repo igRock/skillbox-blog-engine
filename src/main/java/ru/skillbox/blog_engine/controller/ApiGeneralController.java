@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.blog_engine.dto.*;
+import ru.skillbox.blog_engine.services.AuthService;
 import ru.skillbox.blog_engine.services.ResponseService;
 import ru.skillbox.blog_engine.services.StorageService;
 
@@ -21,9 +22,11 @@ public class ApiGeneralController {
     private ResponseService responseService;
     @Autowired
     private StorageService storageService;
+    @Autowired
+    private AuthService authService;
 
     @GetMapping("/api/init")
-    public ApiInitResponse getApiInit() {
+    public ApiInitResponse getApiInit() throws IllegalAccessException {
         return responseService.getApiInitResponse();
     }
 
@@ -43,7 +46,8 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/api/calendar")
-    public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year) {
+    public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year){
+        authService.getAuthorizedUser().orElseThrow(IllegalAccessError::new);
         return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.parse(year, YEAR_FORMATTER)),
                 HttpStatus.OK);
     }

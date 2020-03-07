@@ -33,7 +33,7 @@ public class ApiPostController {
     @GetMapping("/api/post/search")
     public ResponseEntity<PostsResponse> getPostsByQuery(@RequestParam Integer offset,
                                          @RequestParam Integer limit,
-                                         @RequestParam String query) {
+                                         @RequestParam String query) throws IllegalAccessException{
         return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, null, query,
                 null, null), HttpStatus.OK);
     }

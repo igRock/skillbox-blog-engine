@@ -2,13 +2,15 @@ package ru.skillbox.blog_engine.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.skillbox.blog_engine.Main;
 import ru.skillbox.blog_engine.dto.*;
+import ru.skillbox.blog_engine.model.CaptchaCode;
 import ru.skillbox.blog_engine.model.Post;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +21,11 @@ public class ResponseService {
     @Autowired
     private TagService tagService;
     @Autowired
+    private AuthService authService;
+    @Autowired
     private EntityMapper entityMapper;
+    @Autowired
+    private CaptchaCodeService captchaCodeService;
 
     public PostsResponse getPostsResponse(Integer offset,
                                           Integer limit,
@@ -81,6 +87,42 @@ public class ResponseService {
         response.setPhone("+79056655876");
         response.setSubtitle("SubTitle");
         response.setTitle("Title");
+        return response;
+    }
+
+    public AuthResponse login(AuthorizeUserRequest user) {
+        AuthResponse response = new AuthResponse();
+        response.setUser(entityMapper.getAuthorizedUserDTO(authService.loginUser(user)));
+        response.setResult(true);
+        return response;
+    }
+
+    public ResultResponse logout() {
+        ResultResponse response = new ResultResponse();
+        authService.logoutUser();
+        response.setResult(true);
+        return response;
+    }
+
+    public ResultResponse restorePassword(String email) {
+        ResultResponse response = new ResultResponse();
+        response.setResult(authService.restoreUserPassword(email));
+        return response;
+    }
+
+    public AuthResponse checkUserIsAuthorized(){
+        AuthResponse response = new AuthResponse();
+        response.setUser(authService.checkUserIsAuthorized() == null ? null :
+                entityMapper.getAuthorizedUserDTO(authService.checkUserIsAuthorized()));
+        response.setResult(authService.checkUserIsAuthorized() != null);
+        return response;
+    }
+
+    public CaptchaResponse getCaptchaResponse() {
+        CaptchaResponse response = new CaptchaResponse();
+        CaptchaCode captchaCode = captchaCodeService.getCaptcha();
+        response.setImage(CaptchaCodeService.generateBase64Image(captchaCode.getCode()));
+        response.setSecret(captchaCode.getSecretCode());
         return response;
     }
 

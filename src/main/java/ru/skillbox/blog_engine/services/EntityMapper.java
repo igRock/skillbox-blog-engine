@@ -89,4 +89,20 @@ public class EntityMapper {
         tagDto.setWeight((double) (tag.getPosts().size() / activePostsCount));
         return tagDto;
     }
+
+    public UserAdditionalInfoDto getAuthorizedUserDTO(User user) {
+        UserAdditionalInfoDto authorizedUser = new UserAdditionalInfoDto();
+
+        if (user == null) {
+            return authorizedUser;
+        }
+
+        authorizedUser.setId(user.getId());
+        authorizedUser.setName(user.getName());
+        authorizedUser.setPhoto(user.getPhoto());
+        authorizedUser.setEmail(user.getEmail());
+        authorizedUser.setModeration(user.isModerator());
+
+        return authorizedUser;
+    }
 }
