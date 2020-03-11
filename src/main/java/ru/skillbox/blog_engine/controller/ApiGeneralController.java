@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-
+@RequestMapping("/api")
 public class ApiGeneralController {
     DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
 
@@ -25,27 +25,27 @@ public class ApiGeneralController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/api/init")
+    @GetMapping("/init")
     public ApiInitResponse getApiInit() throws IllegalAccessException {
         return responseService.getApiInitResponse();
     }
 
-    @PostMapping("/api/image")
+    @PostMapping("/image")
     public ResponseEntity<String> postImage(@RequestParam("image") MultipartFile image) {
         return new ResponseEntity<>(storageService.store(image), HttpStatus.OK);
     }
 
-    @GetMapping("/api/tag")
+    @GetMapping("/tag")
     public ResponseEntity<TagsResponse> getTags(@RequestParam String query) {
         return new ResponseEntity<>(responseService.getTagsResponse(query), HttpStatus.OK);
     }
 
-    @PostMapping("/api/moderation")
+    @PostMapping("/moderation")
     public ResultResponse postModeration(@RequestBody ModerationRequest moderationRequest) {
         return null;
     }
 
-    @GetMapping("/api/calendar")
+    @GetMapping("/calendar")
     public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year){
         authService.getAuthorizedUser().orElseThrow(IllegalAccessError::new);
         return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.parse(year, YEAR_FORMATTER)),

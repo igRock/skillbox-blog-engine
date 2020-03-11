@@ -36,10 +36,6 @@ public class AuthService {
         return userFromDB;
     }
 
-    public User checkUserIsAuthorized() {
-        return getAuthorizedUser().orElseThrow(IllegalAccessError::new);
-    }
-
     public void logoutUser() {
         final String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
         if (isAuthorized(sessionId)) {

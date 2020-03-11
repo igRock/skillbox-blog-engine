@@ -16,7 +16,9 @@ public class StorageService {
     private Random random = new Random();
 
     public String store(MultipartFile file){
-        String absolutePathToFolder = "/upload/" + generatePathPart() + "/" + generatePathPart() + "/";
+        String absolutePathToFolder =
+            File.separator + "upload" + File.separator + generatePathPart() + File.separator +
+                generatePathPart() + File.separator;
         new File(rootPath + absolutePathToFolder).mkdirs();
         String path = absolutePathToFolder + file.getOriginalFilename();
         try {

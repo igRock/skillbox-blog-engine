@@ -1,5 +1,6 @@
 package ru.skillbox.blog_engine.services;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.skillbox.blog_engine.dto.*;
@@ -12,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import ru.skillbox.blog_engine.model.User;
 
 @Service
 public class ResponseService {
@@ -125,16 +127,17 @@ public class ResponseService {
 
     public AuthResponse checkUserIsAuthorized(){
         AuthResponse response = new AuthResponse();
-        response.setUser(authService.checkUserIsAuthorized() == null ? null :
-                entityMapper.getAuthorizedUserDTO(authService.checkUserIsAuthorized()));
-        response.setResult(authService.checkUserIsAuthorized() != null);
+        Optional<User> authorizedUser = authService.getAuthorizedUser();
+        response.setUser(entityMapper.getAuthorizedUserDTO(authorizedUser.get()));
+        response.setResult(authService.getAuthorizedUser().isPresent());
         return response;
     }
 
     public CaptchaResponse getCaptchaResponse() {
         CaptchaResponse response = new CaptchaResponse();
         CaptchaCode captchaCode = captchaCodeService.getCaptcha();
-        response.setImage(CaptchaCodeService.generateBase64Image(captchaCode.getCode()));
+        response.setImage("data:image/png;base64, "
+                              .concat(CaptchaCodeService.generateBase64Image(captchaCode.getCode())));
         response.setSecret(captchaCode.getSecretCode());
         return response;
     }
