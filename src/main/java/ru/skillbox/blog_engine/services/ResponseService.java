@@ -110,6 +110,19 @@ public class ResponseService {
         return response;
     }
 
+    public ResultResponse resetUserPassword(PasswordResetRequest request) {
+        ResultResponse response = new ResultResponse();
+        response.setResult(authService.resetUserPassword(request));
+        return response;
+    }
+
+    public AuthResponse registerUser(RegisterUserRequest request) {
+        AuthResponse response = new AuthResponse();
+        response.setUser(entityMapper.getAuthorizedUserDTO(authService.registerUser(request)));
+        response.setResult(true);
+        return response;
+    }
+
     public AuthResponse checkUserIsAuthorized(){
         AuthResponse response = new AuthResponse();
         response.setUser(authService.checkUserIsAuthorized() == null ? null :

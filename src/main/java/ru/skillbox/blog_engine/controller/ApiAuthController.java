@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.blog_engine.dto.AuthResponse;
-import ru.skillbox.blog_engine.dto.AuthorizeUserRequest;
-import ru.skillbox.blog_engine.dto.CaptchaResponse;
-import ru.skillbox.blog_engine.dto.ResultResponse;
+import ru.skillbox.blog_engine.dto.*;
 import ru.skillbox.blog_engine.services.ResponseService;
 
 @RestController
@@ -22,8 +19,13 @@ public class ApiAuthController {
     }
 
     @PostMapping("/api/auth/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody AuthorizeUserRequest unauthorizedUsed) {
-        return new ResponseEntity<>(responseService.login(unauthorizedUsed), HttpStatus.OK);
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterUserRequest registerUserRequest) {
+        return new ResponseEntity<>(responseService.registerUser(registerUserRequest), HttpStatus.OK);
+    }
+
+    @PostMapping("/api/auth/password")
+    public ResponseEntity<ResultResponse> resetPassword(@RequestBody PasswordResetRequest request) {
+        return new ResponseEntity<>(responseService.resetUserPassword(request), HttpStatus.OK);
     }
 
     @GetMapping("/api/auth/logout")
