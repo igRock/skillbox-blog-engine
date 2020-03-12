@@ -60,6 +60,9 @@ public class ResponseService {
     }
 
     public TagsResponse getTagsResponse(String tagQuery) {
+        if (tagQuery == null) {
+            return null;
+        }
         List<TagDto> tagDtoList = tagService.getTagDtoListByQuery(tagQuery);
         TagsResponse tagsResponse = new TagsResponse();
         tagsResponse.setTags(tagDtoList);
@@ -128,7 +131,7 @@ public class ResponseService {
     public AuthResponse checkUserIsAuthorized(){
         AuthResponse response = new AuthResponse();
         Optional<User> authorizedUser = authService.getAuthorizedUser();
-        response.setUser(entityMapper.getAuthorizedUserDTO(authorizedUser.get()));
+        authorizedUser.ifPresent(user -> response.setUser(entityMapper.getAuthorizedUserDTO(user)));
         response.setResult(authService.getAuthorizedUser().isPresent());
         return response;
     }

@@ -65,7 +65,9 @@ public class EntityMapper {
         plainPostDto.setViewCount(post.getViewCount());
         plainPostDto.setTime(post.getTime());
         plainPostDto.setUser(userToUserDto(post.getUser()));
-        plainPostDto.setAnnounce(post.getText().substring(0, 150) + "...");
+        if (post.getText().length() > 150) {
+            plainPostDto.setAnnounce(post.getText().substring(0, 150) + "...");
+        }
         plainPostDto.setDislikeCount(post.getPostVotes().stream()
                 .filter(item -> item.getValue() < 0)
                 .count());

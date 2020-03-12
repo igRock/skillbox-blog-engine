@@ -36,7 +36,7 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/tag")
-    public ResponseEntity<TagsResponse> getTags(@RequestParam String query) {
+    public ResponseEntity<TagsResponse> getTags(@RequestParam(required = false) String query) {
         return new ResponseEntity<>(responseService.getTagsResponse(query), HttpStatus.OK);
     }
 
@@ -47,8 +47,8 @@ public class ApiGeneralController {
 
     @GetMapping("/calendar")
     public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year){
-        authService.getAuthorizedUser().orElseThrow(IllegalAccessError::new);
-        return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.parse(year, YEAR_FORMATTER)),
+//        authService.getAuthorizedUser().orElseThrow(IllegalAccessError::new);
+        return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.of(Integer.parseInt(year), 1,1,0,0)),
                 HttpStatus.OK);
     }
 }
