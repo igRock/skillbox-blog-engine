@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.blog_engine.dto.*;
+import ru.skillbox.blog_engine.services.AuthService;
 import ru.skillbox.blog_engine.services.ResponseService;
 import ru.skillbox.blog_engine.services.StorageService;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-
+@RequestMapping("/api")
 public class ApiGeneralController {
     DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
 
@@ -21,30 +22,33 @@ public class ApiGeneralController {
     private ResponseService responseService;
     @Autowired
     private StorageService storageService;
+    @Autowired
+    private AuthService authService;
 
-    @GetMapping("/api/init")
-    public ApiInitResponse getApiInit() {
+    @GetMapping("/init")
+    public ApiInitResponse getApiInit() throws IllegalAccessException {
         return responseService.getApiInitResponse();
     }
 
-    @PostMapping("/api/image")
+    @PostMapping("/image")
     public ResponseEntity<String> postImage(@RequestParam("image") MultipartFile image) {
         return new ResponseEntity<>(storageService.store(image), HttpStatus.OK);
     }
 
-    @GetMapping("/api/tag")
-    public ResponseEntity<TagsResponse> getTags(@RequestParam String query) {
+    @GetMapping("/tag")
+    public ResponseEntity<TagsResponse> getTags(@RequestParam(required = false) String query) {
         return new ResponseEntity<>(responseService.getTagsResponse(query), HttpStatus.OK);
     }
 
-    @PostMapping("/api/moderation")
+    @PostMapping("/moderation")
     public ResultResponse postModeration(@RequestBody ModerationRequest moderationRequest) {
         return null;
     }
 
-    @GetMapping("/api/calendar")
-    public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year) {
-        return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.parse(year, YEAR_FORMATTER)),
+    @GetMapping("/calendar")
+    public ResponseEntity<CalendarResponse> getCalendar(@RequestParam String year){
+//        authService.getAuthorizedUser().orElseThrow(IllegalAccessError::new);
+        return new ResponseEntity<>(responseService.getCalendarResponse(LocalDateTime.of(Integer.parseInt(year), 1,1,0,0)),
                 HttpStatus.OK);
     }
 }

@@ -13,9 +13,12 @@ public class StorageService {
 
     private final String rootPath = new File("").getAbsolutePath()
             .concat("/src/main/java/ru/skillbox/blog_engine");
+    private Random random = new Random();
 
     public String store(MultipartFile file){
-        String absolutePathToFolder = "/upload/" + generatePathPart() + "/" + generatePathPart() + "/";
+        String absolutePathToFolder =
+            File.separator + "upload" + File.separator + generatePathPart() + File.separator +
+                generatePathPart() + File.separator;
         new File(rootPath + absolutePathToFolder).mkdirs();
         String path = absolutePathToFolder + file.getOriginalFilename();
         try {
@@ -30,7 +33,6 @@ public class StorageService {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
-        Random random = new Random();
         return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)

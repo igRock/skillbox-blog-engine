@@ -16,13 +16,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
+@RequestMapping("/api/post")
 public class ApiPostController {
     DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private ResponseService responseService;
 
-    @GetMapping("/api/post")
+    @GetMapping("")
     public ResponseEntity<PostsResponse> getPosts(@RequestParam Integer offset,
                                   @RequestParam Integer limit,
                                   @RequestParam String mode) {
@@ -30,20 +31,20 @@ public class ApiPostController {
                 null, null, null), HttpStatus.OK);
     }
 
-    @GetMapping("/api/post/search")
+    @GetMapping("/search")
     public ResponseEntity<PostsResponse> getPostsByQuery(@RequestParam Integer offset,
                                          @RequestParam Integer limit,
-                                         @RequestParam String query) {
+                                         @RequestParam String query) throws IllegalAccessException{
         return new ResponseEntity<>(responseService.getPostsResponse(offset, limit, null, query,
                 null, null), HttpStatus.OK);
     }
 
-    @GetMapping("/api/post/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PostWithCommentsResponse> getPostById(@PathVariable Integer id) {
         return new ResponseEntity<>(responseService.getPostWithCommentsResponse(id), HttpStatus.OK);
     }
 
-    @GetMapping("/api/post/byDate")
+    @GetMapping("/byDate")
     public ResponseEntity<PostsResponse> getPostsByDate(@RequestParam Integer offset,
                                         @RequestParam Integer limit,
                                         @RequestParam String date) {
@@ -51,7 +52,7 @@ public class ApiPostController {
                 null, LocalDateTime.parse(date, DATE_FORMATTER), null), HttpStatus.OK);
     }
 
-    @GetMapping("/api/post/byTag")
+    @GetMapping("/byTag")
     public ResponseEntity<PostsResponse> getPostsByTag(@RequestParam Integer offset,
                                        @RequestParam Integer limit,
                                        @RequestParam String tag) {
@@ -60,27 +61,26 @@ public class ApiPostController {
     }
 
     //ИЗМЕНИТЬ ФОРМАТ ОТВЕТА, ОТНАСЛЕДОВАТЬ
-    @GetMapping("/api/post/moderation")
+    @GetMapping("/moderation")
     public ResponseEntity<PostsResponse> getPostsModeration(@RequestParam Integer offset,
                                             @RequestParam Integer limit,
                                             @RequestParam ModerationStatus status) {
         return null;
     }
 
-    @GetMapping("/api/post/my")
+    @GetMapping("/my")
     public ResponseEntity<PostsResponse> getMyPosts(@RequestParam Integer offset,
                                     @RequestParam Integer limit,
                                     @RequestParam Status status) {
         return null;
     }
 
-    // ФОРМАТ ОТВЕТА ПОМЕНЯТЬ
-    @PostMapping("/api/post")
+    @PostMapping("")
     public ResponseEntity<ResultResponse> addNewPost(@RequestBody PostRequest request) {
         return null;
     }
 
-    @PutMapping("/api/post/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResultResponse> updatePostById(@PathVariable String id,
                                          @RequestBody PostRequest request) {
         return null;

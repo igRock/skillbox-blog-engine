@@ -65,7 +65,9 @@ public class EntityMapper {
         plainPostDto.setViewCount(post.getViewCount());
         plainPostDto.setTime(post.getTime());
         plainPostDto.setUser(userToUserDto(post.getUser()));
-        plainPostDto.setAnnounce(post.getText().substring(0, 150) + "...");
+        if (post.getText().length() > 150) {
+            plainPostDto.setAnnounce(post.getText().substring(0, 150) + "...");
+        }
         plainPostDto.setDislikeCount(post.getPostVotes().stream()
                 .filter(item -> item.getValue() < 0)
                 .count());
@@ -88,5 +90,21 @@ public class EntityMapper {
         tagDto.setName(tag.getName());
         tagDto.setWeight((double) (tag.getPosts().size() / activePostsCount));
         return tagDto;
+    }
+
+    public UserAdditionalInfoDto getAuthorizedUserDTO(User user) {
+        UserAdditionalInfoDto authorizedUser = new UserAdditionalInfoDto();
+
+        if (user == null) {
+            return authorizedUser;
+        }
+
+        authorizedUser.setId(user.getId());
+        authorizedUser.setName(user.getName());
+        authorizedUser.setPhoto(user.getPhoto());
+        authorizedUser.setEmail(user.getEmail());
+        authorizedUser.setModeration(user.isModerator());
+
+        return authorizedUser;
     }
 }
