@@ -1,5 +1,6 @@
 package ru.skillbox.blog_engine.config;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public class AppConfig {
     private final Captcha captcha = new Captcha();
 
 
-    public void addSession(String sessionId, int userId) {
+    public void addSession(String sessionId, Integer userId) {
         sessions.put(sessionId, userId);
     }
 
@@ -19,11 +20,11 @@ public class AppConfig {
         return sessions;
     }
 
-    public int getUserIdBySessionId(String sessionId) {
+    public Integer getUserIdBySessionId(String sessionId) {
         return sessions.getOrDefault(sessionId, null);
     }
 
-    public int deleteSessionById(String sessionId) {
+    public Integer deleteSessionById(String sessionId) {
         return sessions.remove(sessionId);
     }
 
@@ -31,24 +32,9 @@ public class AppConfig {
         return captcha;
     }
 
+    @Data
     public static class Captcha {
-        private int codeLength = 5;
-        private int hoursToBeUpdated = 1;
-
-        public int getCodeLength() {
-            return codeLength;
-        }
-
-        public void setCodeLength(int codeLength) {
-            this.codeLength = codeLength;
-        }
-
-        public int getHoursToBeUpdated() {
-            return hoursToBeUpdated;
-        }
-
-        public void setHoursToBeUpdated(int hoursToBeUpdated) {
-            this.hoursToBeUpdated = hoursToBeUpdated;
-        }
+        private Integer codeLength = 5;
+        private Integer hoursToBeUpdated = 1;
     }
 }

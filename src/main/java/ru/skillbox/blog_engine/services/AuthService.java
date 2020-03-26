@@ -46,7 +46,7 @@ public class AuthService {
     public Optional<User> getAuthorizedUser() {
         final String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
         if (isAuthorized(sessionId)) {
-            int userId = appConfig.getUserIdBySessionId(sessionId);
+            Integer userId = appConfig.getUserIdBySessionId(sessionId);
             return userRepository.findById(userId);
         }
         return Optional.empty();
@@ -83,12 +83,12 @@ public class AuthService {
 
     public User registerUser(RegisterUserRequest request) {
         User newUser = new User();
-
-        newUser.setName(request.getName());
+        String name = request.getName() == null ? "NEW USER" : request.getName();
+        newUser.setName(name);
         newUser.setEmail(request.getEmail());
         newUser.setPassword(request.getPassword());
         newUser.setRegTime(LocalDateTime.now());
-
+        newUser.setIsModerator(false);
         userRepository.save(newUser);
         return newUser;
     }
@@ -97,7 +97,7 @@ public class AuthService {
         return appConfig.getSessions().containsKey(sessionId);
     }
 
-    private boolean isValidPassword(String passwordFromForm, String passwordFromDb) {
+    public boolean isValidPassword(String passwordFromForm, String passwordFromDb) {
         return passwordFromForm.equals(passwordFromDb);
     }
 }

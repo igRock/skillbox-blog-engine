@@ -29,6 +29,18 @@ public class StorageService {
         return path;
     }
 
+    public boolean delete(String filename) {
+        boolean result = false;
+        try {
+            result = Files.deleteIfExists(Path.of(filename));
+        } catch (NoSuchFileException e) {
+            throw new RuntimeException("No such file exists: " + filename, e);
+        } catch (IOException e) {
+            throw new RuntimeException("Invalid permissions for file: " + filename, e);
+        }
+        return result;
+    }
+
     private String generatePathPart(){
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'

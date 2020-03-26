@@ -32,6 +32,9 @@ public class EntityMapper {
     }
 
     public PostWithCommentsResponse postToPostWithCommentsDto(Post post) {
+        if (post == null) {
+            return null;
+        }
         PostWithCommentsResponse postWithCommentsResponse = new PostWithCommentsResponse();
         postWithCommentsResponse.setId(post.getId());
         postWithCommentsResponse.setText(post.getText());
@@ -65,9 +68,8 @@ public class EntityMapper {
         plainPostDto.setViewCount(post.getViewCount());
         plainPostDto.setTime(post.getTime());
         plainPostDto.setUser(userToUserDto(post.getUser()));
-        if (post.getText().length() > 150) {
-            plainPostDto.setAnnounce(post.getText().substring(0, 150) + "...");
-        }
+        String announce = post.getText().length() > 150 ? post.getText().substring(0, 150) + "..." : post.getText();
+        plainPostDto.setAnnounce(announce);
         plainPostDto.setDislikeCount(post.getPostVotes().stream()
                 .filter(item -> item.getValue() < 0)
                 .count());
@@ -103,7 +105,7 @@ public class EntityMapper {
         authorizedUser.setName(user.getName());
         authorizedUser.setPhoto(user.getPhoto());
         authorizedUser.setEmail(user.getEmail());
-        authorizedUser.setModeration(user.isModerator());
+        authorizedUser.setModeration(user.getIsModerator());
 
         return authorizedUser;
     }

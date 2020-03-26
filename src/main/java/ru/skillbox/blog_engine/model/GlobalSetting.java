@@ -1,47 +1,27 @@
 package ru.skillbox.blog_engine.model;
 
+import lombok.Data;
+import ru.skillbox.blog_engine.enums.GlobalSettings;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "global_settings")
 public class GlobalSetting {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String code;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30, nullable = false)
+    private GlobalSettings.Code code;
+
+    @Column(nullable = false)
     private String name;
-    private String value;
 
-    public Integer getId() {
-        return id;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(length = 5, nullable = false)
+    private GlobalSettings.Value value;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

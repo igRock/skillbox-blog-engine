@@ -1,7 +1,6 @@
 package ru.skillbox.blog_engine.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.blog_engine.dto.*;
@@ -16,36 +15,36 @@ public class ApiAuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthorizeUserRequest authorizeUserRequest) {
-        return new ResponseEntity<>(responseService.login(authorizeUserRequest), HttpStatus.OK);
+        return responseService.login(authorizeUserRequest);
     }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterUserRequest registerUserRequest) {
-        return new ResponseEntity<>(responseService.registerUser(registerUserRequest), HttpStatus.OK);
+        return responseService.registerUser(registerUserRequest);
     }
 
     @PostMapping("/password")
     public ResponseEntity<ResultResponse> resetPassword(@RequestBody PasswordResetRequest request) {
-        return new ResponseEntity<>(responseService.resetUserPassword(request), HttpStatus.OK);
+        return responseService.resetUserPassword(request);
     }
 
     @GetMapping("/logout")
     public ResponseEntity<ResultResponse> logout() {
-        return new ResponseEntity<>(responseService.logout(), HttpStatus.OK);
+        return responseService.logout();
     }
 
     @GetMapping("/check")
     public ResponseEntity<AuthResponse> authCheck() {
-        return new ResponseEntity<>(responseService.checkUserIsAuthorized(), HttpStatus.OK);
+        return responseService.getAuthorizedUserResponse();
     }
 
     @PostMapping("/restore")
     public ResponseEntity<ResultResponse> restore(@RequestParam String email) {
-        return new ResponseEntity<>(responseService.restorePassword(email), HttpStatus.OK);
+        return responseService.restorePassword(email);
     }
 
     @GetMapping("/captcha")
     public ResponseEntity<CaptchaResponse> getCaptcha() {
-        return new ResponseEntity<>(responseService.getCaptchaResponse(), HttpStatus.OK);
+        return responseService.getCaptchaResponse();
     }
 }

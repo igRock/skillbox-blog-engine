@@ -1,8 +1,17 @@
 package ru.skillbox.blog_engine.enums;
 
+import org.springframework.core.convert.converter.Converter;
+
 public enum SortMode {
     RECENT,
     POPULAR,
     BEST,
-    EARLY
+    EARLY;
+
+    public static class StringToEnumConverter implements Converter<String, SortMode> {
+        @Override
+        public SortMode convert(String sortMode) {
+            return SortMode.valueOf(sortMode.toUpperCase());
+        }
+    }
 }

@@ -39,7 +39,7 @@ public class CaptchaCodeService {
         return captchaCodeRepository.save(captchaCode);
     }
 
-    private void deleteOutdatedCaptchas(int hoursToBeUpdated) {
+    private void deleteOutdatedCaptchas(Integer hoursToBeUpdated) {
         final LocalDateTime timeToBeUpdates = LocalDateTime.now().minusHours(hoursToBeUpdated);
         captchaCodeRepository.deleteByTime(timeToBeUpdates);
     }
@@ -49,7 +49,7 @@ public class CaptchaCodeService {
         return dbCaptcha != null && userCaptcha.equals(dbCaptcha.getCode());
     }
 
-    private String getRandomCode(final int length) {
+    private String getRandomCode(final Integer length) {
         final int LEFT = 48;             // '0'
         final int RIGHT = 122;           // 'z'
 
