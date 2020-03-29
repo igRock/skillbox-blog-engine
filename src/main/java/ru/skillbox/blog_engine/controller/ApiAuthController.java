@@ -39,8 +39,8 @@ public class ApiAuthController {
     }
 
     @PostMapping("/restore")
-    public ResponseEntity<ResultResponse> restore(@RequestParam String email) {
-        return responseService.restorePassword(email);
+    public ResponseEntity<ResultResponse> restore(@RequestBody RestorePasswordRequest request) {
+        return responseService.restorePassword(request.getEmail());
     }
 
     @GetMapping("/captcha")

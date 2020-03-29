@@ -2,6 +2,7 @@ package ru.skillbox.blog_engine.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.skillbox.blog_engine.config.AppConfig;
@@ -29,7 +30,6 @@ public class AuthService {
 
     public User loginUser(AuthorizeUserRequest user) {
         final String email = user.getEmail();
-        final String password = user.getPassword();
         User userFromDB = userRepository.findByEmail(email);
         final String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
         appConfig.addSession(sessionId, userFromDB.getId());
@@ -60,14 +60,22 @@ public class AuthService {
         }
         userFromDB.setCode(code);
         User updatedUser = userRepository.save(userFromDB);
-        final String port = environment.getProperty("server.port");
+        final String port = environment.getProperty("local.server.port");
         final String hostName = InetAddress.getLoopbackAddress().getHostName();
         final String url = String.format("http://%s:%s", hostName, port);
 
-        mailSenderService.send(updatedUser.getEmail(), "Ссылка на восстановление пароля",
-                String.format("Для восстановления пароля, пройдите по этой ссылке: " +
-                        "%s/login/change-password/%s", url, code));
-        return true;
+        boolean result;
+        try{
+            mailSenderService.send(updatedUser.getEmail(), "Ссылка на восстановление пароля",
+                                   String.format("Для восстановления пароля, пройдите по этой ссылке: " +
+                                                     "%s/login/change-password/%s", url, code));
+            result = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result = false;
+        }
+
+        return result;
     }
 
     public boolean resetUserPassword(PasswordResetRequest passwordResetRequest) {

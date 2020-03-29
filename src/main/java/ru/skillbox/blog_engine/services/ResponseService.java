@@ -200,13 +200,14 @@ public class ResponseService {
     public ResponseEntity<AuthResponse> login(AuthorizeUserRequest user) {
         AuthResponse response = new AuthResponse();
         User userFromDB = authService.loginUser(user);
-        if (!authService.isValidPassword(user.getPassword(), userFromDB.getPassword())) {
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        boolean result = userFromDB != null;
+        if (result) {
+            if (!authService.isValidPassword(user.getPassword(), userFromDB.getPassword())) {
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            }
+            response.setUser(entityMapper.getAuthorizedUserDTO(userFromDB));
         }
-        response.setUser(entityMapper.getAuthorizedUserDTO(userFromDB));
-
-
-        response.setResult(true);
+        response.setResult(result);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
