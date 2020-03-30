@@ -109,7 +109,7 @@ public class ResponseService {
         List<Post> allPostList = postService.getAllPostsFromRepository(true, ModerationStatus.ACCEPTED);
         List<Post> postList = postService.searchByDate(allPostList, year, LocalDateTime.now());
         Map<String, Long> postsCountPerYear = postList.stream()
-                .collect(Collectors.groupingBy(p -> p.getTime().toString().split(" ")[0],
+                .collect(Collectors.groupingBy(p -> p.getTime().toString().split("T")[0],
                         Collectors.counting()));
         List<Integer> postYears = postList.stream()
                 .map(p -> p.getTime().getYear())

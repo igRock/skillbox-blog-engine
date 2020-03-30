@@ -1,8 +1,18 @@
 package ru.skillbox.blog_engine.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.blog_engine.dto.PostRequest;
 import ru.skillbox.blog_engine.dto.PostWithCommentsResponse;
 import ru.skillbox.blog_engine.dto.PostsResponse;
@@ -11,12 +21,7 @@ import ru.skillbox.blog_engine.enums.ModerationStatus;
 import ru.skillbox.blog_engine.enums.PostModerationStatus;
 import ru.skillbox.blog_engine.enums.SortMode;
 import ru.skillbox.blog_engine.enums.Vote;
-import ru.skillbox.blog_engine.services.AuthService;
 import ru.skillbox.blog_engine.services.ResponseService;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
@@ -55,7 +60,7 @@ public class ApiPostController {
             @RequestParam Integer limit,
             @RequestParam String date) {
         return responseService.getPostsResponse(offset, limit, null, null,
-                LocalDateTime.parse(date, DATE_FORMATTER), null, null, null, true);
+                LocalDateTime.parse(date + "T00:00:00"), null, null, null, true);
     }
 
     @GetMapping("/byTag")
