@@ -1,9 +1,12 @@
 package ru.skillbox.blog_engine.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,10 +29,13 @@ import ru.skillbox.blog_engine.services.ResponseService;
 @RestController
 @RequestMapping("/api/post")
 public class ApiPostController {
-    DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private ResponseService responseService;
+
+    public ApiPostController(ResponseService responseService) {
+        this.responseService = responseService;
+    }
 
     @GetMapping("")
     public ResponseEntity<PostsResponse> getPosts(
@@ -58,9 +64,9 @@ public class ApiPostController {
     public ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam Integer offset,
             @RequestParam Integer limit,
-            @RequestParam String date) {
+            @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
         return responseService.getPostsResponse(offset, limit, null, null,
-                LocalDateTime.parse(date + "T00:00:00"), null, null, null, true);
+                                                LocalDateTime.of(date, LocalTime.MIDNIGHT), null, null, null, true);
     }
 
     @GetMapping("/byTag")

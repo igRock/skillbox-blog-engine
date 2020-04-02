@@ -1,6 +1,8 @@
 package ru.skillbox.blog_engine.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -96,8 +98,10 @@ public class ApiGeneralController {
 
     @GetMapping("/calendar")
     public ResponseEntity<CalendarResponse> getCalendar(
-        @RequestParam(name="year", required = false) String year) {
-        LocalDateTime ldt = LocalDateTime.parse("2020-01-01T00:00:00");
+        @RequestParam(required = false) String year) {
+        Integer currentYear = LocalDate.now().getYear();
+        LocalDateTime ldt = LocalDateTime.of(LocalDate.of(currentYear,1, 1),
+                                             LocalTime.MIDNIGHT);
         if (year != null) {
             ldt = ldt.withYear(Integer.parseInt(year));
         }
