@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.skillbox.blog_engine.dto.SettingsValues;
 import ru.skillbox.blog_engine.enums.GlobalSettings;
+import ru.skillbox.blog_engine.enums.GlobalSettings.Code;
+import ru.skillbox.blog_engine.enums.GlobalSettings.Value;
 import ru.skillbox.blog_engine.model.GlobalSetting;
 import ru.skillbox.blog_engine.repository.GlobalSettingsRepository;
 
@@ -21,7 +23,7 @@ public class SettingsService {
 
     private GlobalSetting saveSetting(GlobalSettings.Code code, boolean valueToUpdate) {
         GlobalSettings.Value value = valueToUpdate ? GlobalSettings.Value.YES : GlobalSettings.Value.NO;
-        GlobalSetting globalSetting = settingsRepository.findByCode(code);
+        GlobalSetting globalSetting = settingsRepository.findByCode(code).orElse(generateDefaultGS());
         if (!value.equals(globalSetting.getValue())) {
             globalSetting.setValue(value);
             settingsRepository.save(globalSetting);
@@ -32,9 +34,12 @@ public class SettingsService {
     public SettingsValues getSettings() {
         SettingsValues settings = new SettingsValues();
         settingsRepository.findAll().forEach(setting -> {
-            GlobalSetting MULTIUSER_MODE = settingsRepository.findByCode(GlobalSettings.Code.MULTIUSER_MODE);
-            GlobalSetting POST_PREMODERATION = settingsRepository.findByCode(GlobalSettings.Code.POST_PREMODERATION);
-            GlobalSetting STATISTICS_IS_PUBLIC = settingsRepository.findByCode(GlobalSettings.Code.STATISTICS_IS_PUBLIC);
+            GlobalSetting MULTIUSER_MODE = settingsRepository.findByCode(GlobalSettings.Code.MULTIUSER_MODE)
+                .orElse(generateDefaultGS());
+            GlobalSetting POST_PREMODERATION = settingsRepository.findByCode(GlobalSettings.Code.POST_PREMODERATION)
+                .orElse(generateDefaultGS());
+            GlobalSetting STATISTICS_IS_PUBLIC = settingsRepository.findByCode(GlobalSettings.Code.STATISTICS_IS_PUBLIC)
+                .orElse(generateDefaultGS());
             settings.setMultiuserMode(MULTIUSER_MODE.getValue().getValue());
             settings.setPostPremoderation(POST_PREMODERATION.getValue().getValue());
             settings.setStatisticsIsPublic(STATISTICS_IS_PUBLIC.getValue().getValue());
@@ -43,7 +48,16 @@ public class SettingsService {
     }
 
     public boolean isStatsPublic() {
-        return settingsRepository.findByCode(GlobalSettings.Code.STATISTICS_IS_PUBLIC).getValue().getValue();
+        return settingsRepository.findByCode(GlobalSettings.Code.STATISTICS_IS_PUBLIC)
+            .orElse(generateDefaultGS()).getValue().getValue();
+    }
+
+    private static GlobalSetting generateDefaultGS() {
+        GlobalSetting gs = new GlobalSetting();
+        gs.setValue(Value.YES);
+        gs.setCode(Code.STATISTICS_IS_PUBLIC);
+        gs.setName(Code.STATISTICS_IS_PUBLIC.getName());
+        return gs;
     }
 
 }

@@ -3,6 +3,7 @@ package ru.skillbox.blog_engine.services;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,13 +42,13 @@ import ru.skillbox.blog_engine.model.User;
 public class ResponseService {
 
     @Autowired
+    private EntityMapper entityMapper;
+    @Autowired
     private PostService postService;
     @Autowired
     private TagService tagService;
     @Autowired
     private AuthService authService;
-    @Autowired
-    private EntityMapper entityMapper;
     @Autowired
     private CaptchaCodeService captchaCodeService;
     @Autowired
@@ -57,15 +58,30 @@ public class ResponseService {
     @Autowired
     private VotesService votesService;
 
+    public ResponseService(EntityMapper entityMapper, PostService postService,
+                           TagService tagService, AuthService authService,
+                           CaptchaCodeService captchaCodeService,
+                           StorageService storageService, CommentsService commentsService,
+                           VotesService votesService) {
+        this.entityMapper = entityMapper;
+        this.postService = postService;
+        this.tagService = tagService;
+        this.authService = authService;
+        this.captchaCodeService = captchaCodeService;
+        this.storageService = storageService;
+        this.commentsService = commentsService;
+        this.votesService = votesService;
+    }
+
     public ResponseEntity<PostsResponse> getPostsResponse(Integer offset,
-                                           Integer limit,
-                                           SortMode sortMode,
-                                           String searchQuery,
-                                           LocalDateTime ldt,
-                                           String tag,
-                                           User user,
-                                           ModerationStatus status,
-                                           Boolean isActive) {
+                                                          Integer limit,
+                                                          SortMode sortMode,
+                                                          String searchQuery,
+                                                          LocalDateTime ldt,
+                                                          String tag,
+                                                          User user,
+                                                          ModerationStatus status,
+                                                          Boolean isActive) {
         status = status == null ? ModerationStatus.ACCEPTED : status;
         List<Post> postList = postService.getAllPostsFromRepository(isActive, status);
         if (searchQuery != null) {
@@ -232,6 +248,11 @@ public class ResponseService {
 
     public ResponseEntity<AuthResponse> registerUser(RegisterUserRequest request) {
         AuthResponse response = new AuthResponse();
+        Map<String, Object> errors = validateUserInputAndGetErrors(request);
+        if (errors.size() > 0) {
+            response.setErrors(errors);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
         response.setUser(entityMapper.getAuthorizedUserDTO(authService.registerUser(request)));
         response.setResult(true);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -318,6 +339,28 @@ public class ResponseService {
             result.setResult(false);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    private Map<String, Object> validateUserInputAndGetErrors(RegisterUserRequest user) {
+        final String email = user.getEmail();
+
+        final String password = user.getPassword();
+        final String captcha = user.getCaptcha();
+        final String captchaSecretCode = user.getCaptchaSecret();
+
+        Map<String, Object> errors = new HashMap<>();
+        User userFromDB = authService.findUserByEmail(email);
+
+        if (userFromDB != null) {
+            errors.put("email", "Этот адрес уже зарегистрирован.");
+        }
+        if (password == null || password.length() < 6) {
+            errors.put("password", "Пароль короче 6 символов");
+        }
+        if (!captchaCodeService.isValidCaptcha(captcha, captchaSecretCode)) {
+            errors.put("captcha", "Код с картинки введен неверно.");
+        }
+        return errors;
     }
 
     private PostsResponse formPostsResponse(Integer offset, Integer limit, List<PlainPostDto> posts) {

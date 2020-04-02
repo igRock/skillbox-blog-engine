@@ -7,5 +7,5 @@ import java.util.Map;
 @Data
 public class ResultResponse {
     private Boolean result;
-    private Map<String, String> errors;
+    private Map<String, Object> errors;
 }
