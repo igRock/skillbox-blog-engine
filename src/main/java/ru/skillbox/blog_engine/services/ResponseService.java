@@ -106,12 +106,26 @@ public class ResponseService {
         return new ResponseEntity<>(formPostsResponse(offset, limit, plainPostDtoList), HttpStatus.OK);
     }
 
-    public ResponseEntity<PostWithCommentsResponse> getPostWithCommentsResponse(Integer id) {
-        PostWithCommentsResponse postWithCommentsResponse = postService.getPostWithCommentsById(id);
-        if (postWithCommentsResponse == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(postWithCommentsResponse, HttpStatus.OK);
+    public ResponseEntity<?> getPostWithCommentsResponse(Integer id) {
+//        PostWithCommentsResponse postWithCommentsResponse = postService.getPostWithCommentsById(id);
+//        if (postWithCommentsResponse == null) {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(postWithCommentsResponse, HttpStatus.OK);
+
+
+        Optional<Post> postOptional = postService.getPostById(id);
+
+        if (postOptional.isEmpty())
+            return new ResponseEntity<>(String.format("Пост с идентификатором '%d' не найден!", id),
+                                        HttpStatus.NOT_FOUND);
+
+        Post post = postOptional.get();
+        PostWithCommentsResponse result = entityMapper.postToPostWithCommentsDto(post);
+
+        post.incrementViewCount();
+        postService.updatePost(post);
+        return ResponseEntity.ok(result);
     }
 
     public ResponseEntity<TagsResponse> getTagsResponse(String tagQuery) {
@@ -249,12 +263,13 @@ public class ResponseService {
     public ResponseEntity<AuthResponse> registerUser(RegisterUserRequest request) {
         AuthResponse response = new AuthResponse();
         Map<String, Object> errors = validateUserInputAndGetErrors(request);
-        if (errors.size() > 0) {
+        boolean result = errors.size() == 0;
+        response.setResult(result);
+        if (!result) {
             response.setErrors(errors);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         response.setUser(entityMapper.getAuthorizedUserDTO(authService.registerUser(request)));
-        response.setResult(true);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

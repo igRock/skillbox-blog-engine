@@ -56,7 +56,7 @@ public class ApiPostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostWithCommentsResponse> getPostById(@PathVariable Integer id) {
+    public ResponseEntity<?> getPostById(@PathVariable Integer id) {
         return responseService.getPostWithCommentsResponse(id);
     }
 

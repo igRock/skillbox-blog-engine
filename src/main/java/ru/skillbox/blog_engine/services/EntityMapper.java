@@ -21,7 +21,7 @@ public class EntityMapper {
         return userWithPhotoDto;
     }
 
-    public CommentDto psotCommentToCommentDto(PostComment postComment) {
+    public CommentDto postCommentToCommentDto(PostComment postComment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(postComment.getId());
         commentDto.setText(postComment.getText());
@@ -44,7 +44,7 @@ public class EntityMapper {
         postWithCommentsResponse.setUser(userToUserDto(post.getUser()));
 
         postWithCommentsResponse.setComments(post.getPostComments().stream()
-                .map(this::psotCommentToCommentDto)
+                .map(this::postCommentToCommentDto)
                 .collect(Collectors.toList()));
         postWithCommentsResponse.setTags(post.getTags().stream()
                 .map(Tag::getName)

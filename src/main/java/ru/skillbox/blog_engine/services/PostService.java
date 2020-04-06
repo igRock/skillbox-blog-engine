@@ -83,6 +83,10 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public Post updatePost(Post newPost) {
+        return postRepository.save(newPost);
+    }
+
     public Post savePost(Post post, PostRequest postData, User editor) {
         final Post postToSave = (post == null) ? new Post() : post;
         final LocalDateTime NOW = LocalDateTime.now();

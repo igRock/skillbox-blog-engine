@@ -41,7 +41,7 @@ public class ProfileService {
             user.setEmail(email);
         }
 
-        if (!password.isEmpty()) {
+        if (password != null && !password.isBlank()) {
             user.setPassword(password);
         }
 
