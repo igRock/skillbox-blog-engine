@@ -1,17 +1,13 @@
 package ru.skillbox.blog_engine.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Data;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.Set;
-import ru.skillbox.blog_engine.utils.PostDateConverter;
+import lombok.Data;
 
 @Data
 public class PostRequest {
-    @JsonSerialize(using = PostDateConverter.Serialize.class)
-    @JsonDeserialize(using = PostDateConverter.Deserialize.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time;
     private Boolean active;
     private String title;
