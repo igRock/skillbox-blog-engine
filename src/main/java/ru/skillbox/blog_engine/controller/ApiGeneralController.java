@@ -33,7 +33,6 @@ import ru.skillbox.blog_engine.enums.ModerationStatus;
 import ru.skillbox.blog_engine.enums.StatisticsType;
 import ru.skillbox.blog_engine.model.Post;
 import ru.skillbox.blog_engine.model.User;
-import ru.skillbox.blog_engine.repository.PostRepository;
 import ru.skillbox.blog_engine.services.AuthService;
 import ru.skillbox.blog_engine.services.PostService;
 import ru.skillbox.blog_engine.services.SettingsService;
@@ -56,8 +55,6 @@ public class ApiGeneralController {
     private StorageService storageService;
     @Autowired
     private TagService tagService;
-    @Autowired
-    private PostRepository postRepository;
 
     public ApiGeneralController(AuthService authService, SettingsService settingsService,
                                 StatisticsService statisticsService,
@@ -129,7 +126,7 @@ public class ApiGeneralController {
                                   ModerationStatus.ACCEPTED : ModerationStatus.DECLINED;
         post.setModerationStatus(status);
         post.setModeratedBy(user);
-        Post updatedPost = postRepository.save(post);
+        Post updatedPost = postService.savePost(post);
 
         ResultResponse result = new ResultResponse();
         result.setResult(updatedPost != null);

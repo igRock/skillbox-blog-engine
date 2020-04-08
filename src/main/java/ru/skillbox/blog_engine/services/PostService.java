@@ -222,6 +222,10 @@ public class PostService {
         return postRepository.findById(id);
     }
 
+    public Post savePost(Post newPost) {
+        return postRepository.save(newPost);
+    }
+
     public Integer countByUser(User user) {
         return postRepository.countByUser(user);
     }
