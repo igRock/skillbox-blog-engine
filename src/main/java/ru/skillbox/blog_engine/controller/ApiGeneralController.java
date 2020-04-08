@@ -124,8 +124,8 @@ public class ApiGeneralController {
         if (postModerator != null && !postModerator.equals(user)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-
-        ModerationStatus status = (moderationRequest.getDecision() == Decision.ACCEPT) ?
+        Decision decision = Decision.valueOf(moderationRequest.getDecision().toUpperCase());
+        ModerationStatus status = (decision.equals(Decision.ACCEPT)) ?
                                   ModerationStatus.ACCEPTED : ModerationStatus.DECLINED;
         post.setModerationStatus(status);
         post.setModeratedBy(user);

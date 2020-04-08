@@ -8,5 +8,5 @@ import ru.skillbox.blog_engine.enums.Decision;
 public class ModerationRequest {
     @JsonProperty(value = "post_id")
     private Integer postId;
-    private Decision decision;
+    private String decision;
 }
