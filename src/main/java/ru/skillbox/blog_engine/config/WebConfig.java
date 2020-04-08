@@ -25,7 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
             .concat("/src/main/resources");
         final String uploadPath = "/static/img/upload";
 
-
         registry.addResourceHandler(String.format("%s/**", uploadPath))
             .addResourceLocations(String.format("file://%s", rootPath.concat(uploadPath)));
     }

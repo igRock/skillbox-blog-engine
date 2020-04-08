@@ -1,5 +1,6 @@
 package ru.skillbox.blog_engine.services;
 
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.skillbox.blog_engine.enums.Vote;
@@ -8,15 +9,14 @@ import ru.skillbox.blog_engine.model.PostVote;
 import ru.skillbox.blog_engine.model.User;
 import ru.skillbox.blog_engine.repository.VotesRepository;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class VotesService {
     @Autowired
     private VotesRepository votesRepository;
+
+    public VotesService(VotesRepository votesRepository) {
+        this.votesRepository = votesRepository;
+    }
 
     public Boolean vote(Vote voteType, User user, Post post) {
         Integer voteRequested = voteType.equals(Vote.LIKE) ? 1 : -1;

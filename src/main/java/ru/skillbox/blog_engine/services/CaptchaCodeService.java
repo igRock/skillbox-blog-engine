@@ -25,9 +25,14 @@ import java.util.UUID;
 public class CaptchaCodeService {
     @Autowired
     private AppConfig appConfig;
-
     @Autowired
     private CaptchaCodeRepository captchaCodeRepository;
+
+    public CaptchaCodeService(AppConfig appConfig,
+                              CaptchaCodeRepository captchaCodeRepository) {
+        this.appConfig = appConfig;
+        this.captchaCodeRepository = captchaCodeRepository;
+    }
 
     private static final Cage CAGE = new GCage();
 
@@ -68,13 +73,6 @@ public class CaptchaCodeService {
     }
 
     public static String generateBase64Image(String text) {
-//        String result = "";
-//        try {
-//            result = new String(Base64.getEncoder().encode(CAGE.draw(text)), "UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//        return result;
         String result = "";
         try {
             BufferedImage captchaImage = ImageIO.read(new ByteArrayInputStream(CAGE.draw(text)));

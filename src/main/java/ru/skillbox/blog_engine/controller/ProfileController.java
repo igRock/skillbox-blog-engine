@@ -31,6 +31,13 @@ public class ProfileController {
     @Autowired
     private StorageService storageService;
 
+    public ProfileController(AuthService authService, ProfileService profileService,
+                             StorageService storageService) {
+        this.authService = authService;
+        this.profileService = profileService;
+        this.storageService = storageService;
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
     public ResponseEntity<ResultResponse> updateProfile(@RequestBody ProfileDto profileData) {

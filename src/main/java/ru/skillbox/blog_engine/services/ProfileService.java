@@ -12,9 +12,13 @@ public class ProfileService {
 
     @Autowired
     private StorageService storageService;
-
     @Autowired
     private UserRepository userRepository;
+
+    public ProfileService(StorageService storageService, UserRepository userRepository) {
+        this.storageService = storageService;
+        this.userRepository = userRepository;
+    }
 
     public Boolean updateProfile(User user, ProfileDto profileDto) {
 

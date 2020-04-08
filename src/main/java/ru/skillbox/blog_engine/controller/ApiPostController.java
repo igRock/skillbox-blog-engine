@@ -17,24 +17,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.blog_engine.dto.PostRequest;
-import ru.skillbox.blog_engine.dto.PostWithCommentsResponse;
 import ru.skillbox.blog_engine.dto.PostsResponse;
 import ru.skillbox.blog_engine.dto.ResultResponse;
 import ru.skillbox.blog_engine.enums.ModerationStatus;
 import ru.skillbox.blog_engine.enums.PostModerationStatus;
 import ru.skillbox.blog_engine.enums.SortMode;
 import ru.skillbox.blog_engine.enums.Vote;
-import ru.skillbox.blog_engine.services.ResponseService;
+import ru.skillbox.blog_engine.services.PostService;
 
 @RestController
 @RequestMapping("/api/post")
 public class ApiPostController {
 
     @Autowired
-    private ResponseService responseService;
+    private PostService postService;
 
-    public ApiPostController(ResponseService responseService) {
-        this.responseService = responseService;
+    public ApiPostController(PostService postService) {
+        this.postService = postService;
     }
 
     @GetMapping("")
@@ -42,7 +41,7 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam SortMode mode) {
-        return responseService.getPostsResponse(offset, limit, mode, null, null,
+        return postService.getPostsResponse(offset, limit, mode, null, null,
                 null, null, null, true);
     }
 
@@ -51,13 +50,13 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam String query) {
-        return responseService.getPostsResponse(offset, limit, null, query, null,
+        return postService.getPostsResponse(offset, limit, null, query, null,
                 null, null, null, true);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Integer id) {
-        return responseService.getPostWithCommentsResponse(id);
+        return postService.getPostWithCommentsResponse(id);
     }
 
     @GetMapping("/byDate")
@@ -65,7 +64,7 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
-        return responseService.getPostsResponse(offset, limit, null, null,
+        return postService.getPostsResponse(offset, limit, null, null,
                                                 LocalDateTime.of(date, LocalTime.MIDNIGHT), null, null, null, true);
     }
 
@@ -74,7 +73,7 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam String tag) {
-        return responseService.getPostsResponse(offset, limit, null, null,
+        return postService.getPostsResponse(offset, limit, null, null,
                 null, tag, null, null, true);
     }
 
@@ -84,7 +83,7 @@ public class ApiPostController {
             @RequestParam Integer limit,
             @RequestParam PostModerationStatus status) {
         status = (status == null) ? PostModerationStatus.INACTIVE : status;
-        return responseService.getMyPosts(offset, limit, status);
+        return postService.getMyPosts(offset, limit, status);
     }
 
     @GetMapping("/moderation")
@@ -92,24 +91,24 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam ModerationStatus status) {
-        return responseService.getModeratedPosts(offset, limit, status);
+        return postService.getModeratedPosts(offset, limit, status);
     }
 
     @PostMapping("")
     public ResponseEntity<?> addNewPost(@RequestBody PostRequest request) {
-        return responseService.addNewPost(request);
+        return postService.addNewPost(request);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editPost(
             @PathVariable Integer id,
             @RequestBody PostRequest request) {
-        return responseService.editPost(id, request);
+        return postService.editPost(id, request);
     }
 
     @PostMapping("/{vote}")
     public ResponseEntity<ResultResponse> votePost(@PathVariable Vote vote, @RequestBody Map<String, Integer> body) {
-        return responseService.votePost(vote,  body.getOrDefault("post_id", 0));
+        return postService.votePost(vote,  body.getOrDefault("post_id", 0));
     }
 
 }

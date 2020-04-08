@@ -15,6 +15,10 @@ public class CommentsService {
     @Autowired
     private CommentsRepository commentsRepository;
 
+    public CommentsService(CommentsRepository commentsRepository) {
+        this.commentsRepository = commentsRepository;
+    }
+
     public Optional<PostComment> findCommentById(Integer id) {
         return commentsRepository.findById(id);
     }

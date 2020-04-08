@@ -10,15 +10,20 @@ import ru.skillbox.blog_engine.model.User;
 public class StatisticsService {
     @Autowired
     private AuthService authService;
-
     @Autowired
     private SettingsService settingsService;
-
     @Autowired
     private PostService postService;
-
     @Autowired
     private VotesService votesService;
+
+    public StatisticsService(AuthService authService, SettingsService settingsService,
+                             PostService postService, VotesService votesService) {
+        this.authService = authService;
+        this.settingsService = settingsService;
+        this.postService = postService;
+        this.votesService = votesService;
+    }
 
     public StatisticsDto getStatistics(User user) {
         StatisticsDto statisticsDto = new StatisticsDto();

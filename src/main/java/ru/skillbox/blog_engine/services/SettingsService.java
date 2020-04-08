@@ -14,6 +14,10 @@ public class SettingsService {
     @Autowired
     private GlobalSettingsRepository settingsRepository;
 
+    public SettingsService(GlobalSettingsRepository settingsRepository) {
+        this.settingsRepository = settingsRepository;
+    }
+
     public SettingsValues saveSettings(SettingsValues settings) {
         saveSetting(GlobalSettings.Code.MULTIUSER_MODE, settings.getMultiuserMode());
         saveSetting(GlobalSettings.Code.POST_PREMODERATION, settings.getPostPremoderation());

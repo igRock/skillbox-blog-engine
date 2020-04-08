@@ -1,8 +1,12 @@
 package ru.skillbox.blog_engine.services;
 
+import java.net.InetAddress;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+import javax.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import ru.skillbox.blog_engine.config.AppConfig;
@@ -11,11 +15,6 @@ import ru.skillbox.blog_engine.dto.PasswordResetRequest;
 import ru.skillbox.blog_engine.dto.RegisterUserRequest;
 import ru.skillbox.blog_engine.model.User;
 import ru.skillbox.blog_engine.repository.UserRepository;
-
-import java.net.InetAddress;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -27,6 +26,14 @@ public class AuthService {
     private MailSenderService mailSenderService;
     @Autowired
     private Environment environment;
+
+    public AuthService(UserRepository userRepository, AppConfig appConfig,
+                       MailSenderService mailSenderService, Environment environment) {
+        this.userRepository = userRepository;
+        this.appConfig = appConfig;
+        this.mailSenderService = mailSenderService;
+        this.environment = environment;
+    }
 
     public User loginUser(AuthorizeUserRequest user) {
         final String email = user.getEmail();
@@ -72,8 +79,7 @@ public class AuthService {
                                    String.format("Для восстановления пароля, пройдите по этой ссылке: " +
                                                      "%s/login/change-password/%s", url, code));
             result = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (MessagingException ex) {
             result = false;
         }
 
