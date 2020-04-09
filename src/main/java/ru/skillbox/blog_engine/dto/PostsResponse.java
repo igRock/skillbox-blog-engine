@@ -1,24 +1,11 @@
 package ru.skillbox.blog_engine.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class PostsResponse {
-    private int count;
+    private Integer count;
     private List<PlainPostDto> posts;
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public List<PlainPostDto> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<PlainPostDto> posts) {
-        this.posts = posts;
-    }
 }

@@ -1,5 +1,10 @@
 package ru.skillbox.blog_engine.services;
 
+import java.net.InetAddress;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+import javax.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -10,11 +15,6 @@ import ru.skillbox.blog_engine.dto.PasswordResetRequest;
 import ru.skillbox.blog_engine.dto.RegisterUserRequest;
 import ru.skillbox.blog_engine.model.User;
 import ru.skillbox.blog_engine.repository.UserRepository;
-
-import java.net.InetAddress;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -27,12 +27,21 @@ public class AuthService {
     @Autowired
     private Environment environment;
 
+    public AuthService(UserRepository userRepository, AppConfig appConfig,
+                       MailSenderService mailSenderService, Environment environment) {
+        this.userRepository = userRepository;
+        this.appConfig = appConfig;
+        this.mailSenderService = mailSenderService;
+        this.environment = environment;
+    }
+
     public User loginUser(AuthorizeUserRequest user) {
         final String email = user.getEmail();
-        final String password = user.getPassword();
         User userFromDB = userRepository.findByEmail(email);
-        final String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
-        appConfig.addSession(sessionId, userFromDB.getId());
+        if (userFromDB != null) {
+            final String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+            appConfig.addSession(sessionId, userFromDB.getId());
+        }
         return userFromDB;
     }
 
@@ -46,7 +55,7 @@ public class AuthService {
     public Optional<User> getAuthorizedUser() {
         final String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
         if (isAuthorized(sessionId)) {
-            int userId = appConfig.getUserIdBySessionId(sessionId);
+            Integer userId = appConfig.getUserIdBySessionId(sessionId);
             return userRepository.findById(userId);
         }
         return Optional.empty();
@@ -60,14 +69,21 @@ public class AuthService {
         }
         userFromDB.setCode(code);
         User updatedUser = userRepository.save(userFromDB);
-        final String port = environment.getProperty("server.port");
+        final String port = environment.getProperty("local.server.port");
         final String hostName = InetAddress.getLoopbackAddress().getHostName();
         final String url = String.format("http://%s:%s", hostName, port);
 
-        mailSenderService.send(updatedUser.getEmail(), "Ссылка на восстановление пароля",
-                String.format("Для восстановления пароля, пройдите по этой ссылке: " +
-                        "%s/login/change-password/%s", url, code));
-        return true;
+        boolean result;
+        try{
+            mailSenderService.send(updatedUser.getEmail(), "Ссылка на восстановление пароля",
+                                   String.format("Для восстановления пароля, пройдите по этой ссылке: " +
+                                                     "%s/login/change-password/%s", url, code));
+            result = true;
+        } catch (MessagingException ex) {
+            result = false;
+        }
+
+        return result;
     }
 
     public boolean resetUserPassword(PasswordResetRequest passwordResetRequest) {
@@ -83,12 +99,13 @@ public class AuthService {
 
     public User registerUser(RegisterUserRequest request) {
         User newUser = new User();
-
-        newUser.setName(request.getName());
+        String name = request.getName() == null ?
+                      request.getEmail().split("@")[0] : request.getName();
+        newUser.setName(name);
         newUser.setEmail(request.getEmail());
         newUser.setPassword(request.getPassword());
         newUser.setRegTime(LocalDateTime.now());
-
+        newUser.setIsModerator(false);
         userRepository.save(newUser);
         return newUser;
     }
@@ -97,7 +114,11 @@ public class AuthService {
         return appConfig.getSessions().containsKey(sessionId);
     }
 
-    private boolean isValidPassword(String passwordFromForm, String passwordFromDb) {
+    public boolean isValidPassword(String passwordFromForm, String passwordFromDb) {
         return passwordFromForm.equals(passwordFromDb);
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

@@ -12,12 +12,12 @@ import java.util.Random;
 public class StorageService {
 
     private final String rootPath = new File("").getAbsolutePath()
-            .concat("/src/main/java/ru/skillbox/blog_engine");
+            .concat("/src/main/resources");
     private Random random = new Random();
 
     public String store(MultipartFile file){
         String absolutePathToFolder =
-            File.separator + "upload" + File.separator + generatePathPart() + File.separator +
+            File.separator + "static/img/upload" + File.separator + generatePathPart() + File.separator +
                 generatePathPart() + File.separator;
         new File(rootPath + absolutePathToFolder).mkdirs();
         String path = absolutePathToFolder + file.getOriginalFilename();
@@ -27,6 +27,18 @@ public class StorageService {
             e.printStackTrace();
         }
         return path;
+    }
+
+    public boolean delete(String filename) {
+        boolean result = false;
+        try {
+            result = Files.deleteIfExists(Path.of(filename));
+        } catch (NoSuchFileException e) {
+            throw new RuntimeException("No such file exists: " + filename, e);
+        } catch (IOException e) {
+            throw new RuntimeException("Invalid permissions for file: " + filename, e);
+        }
+        return result;
     }
 
     private String generatePathPart(){
