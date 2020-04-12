@@ -39,7 +39,7 @@ public class TagService {
         return tagList;
     }
 
-    private List<TagDto> getAllTagDtoList() {
+    public List<TagDto> getAllTagDtoList() {
         List<Post> allPostList = postService.getAllPostsFromRepository(true, ModerationStatus.ACCEPTED);
         List<Tag> allTagList = getAllTagsFromRepository();
         return allTagList.stream()

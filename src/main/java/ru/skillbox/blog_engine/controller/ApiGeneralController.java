@@ -79,10 +79,12 @@ public class ApiGeneralController {
 
     @GetMapping("/tag")
     public ResponseEntity<TagsResponse> getTags(@RequestParam(required = false) String query) {
+        List<TagDto> tagDtoList;
         if (query == null) {
-            return null;
+            tagDtoList = tagService.getAllTagDtoList();
+        } else {
+            tagDtoList = tagService.getTagDtoListByQuery(query);
         }
-        List<TagDto> tagDtoList = tagService.getTagDtoListByQuery(query);
         TagsResponse tagsResponse = new TagsResponse();
         tagsResponse.setTags(tagDtoList);
         return new ResponseEntity<>(tagsResponse, HttpStatus.OK);
