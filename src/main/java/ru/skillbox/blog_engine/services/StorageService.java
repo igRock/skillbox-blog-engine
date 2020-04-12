@@ -16,13 +16,13 @@ public class StorageService {
     private Random random = new Random();
 
     public String store(MultipartFile file){
+        String prefix = "/static";
         String absolutePathToFolder =
-            File.separator + "static/img/upload" + File.separator + generatePathPart() + File.separator +
-                generatePathPart() + File.separator;
-        new File(rootPath + absolutePathToFolder).mkdirs();
+            "/img/upload/" + generatePathPart() + "/" + generatePathPart() + "/";
+        new File(rootPath + prefix + absolutePathToFolder).mkdirs();
         String path = absolutePathToFolder + file.getOriginalFilename();
         try {
-            Files.copy(file.getInputStream(), Paths.get(rootPath + path));
+            Files.copy(file.getInputStream(), Paths.get(rootPath  + prefix + path));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,6 +39,14 @@ public class StorageService {
             throw new RuntimeException("Invalid permissions for file: " + filename, e);
         }
         return result;
+    }
+
+    public byte[] getImageByPath(Path path) {
+        try {
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private String generatePathPart(){

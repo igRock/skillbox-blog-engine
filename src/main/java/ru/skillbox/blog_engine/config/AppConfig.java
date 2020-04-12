@@ -34,7 +34,7 @@ public class AppConfig {
 
     @Data
     public static class Captcha {
-        private Integer codeLength = 5;
+        private Integer codeLength = 4;
         private Integer hoursToBeUpdated = 1;
     }
 }

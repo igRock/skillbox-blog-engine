@@ -46,14 +46,15 @@ public class ApiAuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody AuthorizeUserRequest authorizeUserRequest) {
         AuthResponse response = new AuthResponse();
         User userFromDB = authService.loginUser(authorizeUserRequest);
+
         boolean result = userFromDB != null;
+        response.setResult(result);
         if (result) {
             if (!authService.isValidPassword(authorizeUserRequest.getPassword(), userFromDB.getPassword())) {
-                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
             }
             response.setUser(entityMapper.getAuthorizedUserDTO(userFromDB));
         }
-        response.setResult(result);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

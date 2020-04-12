@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.blog_engine.dto.ApiInitResponse;
 import ru.skillbox.blog_engine.dto.CalendarResponse;
 import ru.skillbox.blog_engine.dto.ModerationRequest;
@@ -51,20 +49,19 @@ public class ApiGeneralController {
     private StatisticsService statisticsService;
     @Autowired
     private PostService postService;
-    @Autowired
-    private StorageService storageService;
+
     @Autowired
     private TagService tagService;
 
-    public ApiGeneralController(AuthService authService, SettingsService settingsService,
+    public ApiGeneralController(AuthService authService,
+                                SettingsService settingsService,
                                 StatisticsService statisticsService,
-                                PostService postService, StorageService storageService,
+                                PostService postService,
                                 TagService tagService) {
         this.authService = authService;
         this.settingsService = settingsService;
         this.statisticsService = statisticsService;
         this.postService = postService;
-        this.storageService = storageService;
         this.tagService = tagService;
     }
 
@@ -78,16 +75,6 @@ public class ApiGeneralController {
         response.setSubtitle("SubTitle");
         response.setTitle("Title");
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/image",
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-        produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> postImage(@RequestParam("image") MultipartFile image) {
-        if (authService.getAuthorizedUser().isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(storageService.store(image), HttpStatus.OK);
     }
 
     @GetMapping("/tag")
