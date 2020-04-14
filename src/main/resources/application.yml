@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/blog_engine?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: Uhbghjcnuhb12
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  mail:
+    host: smtp.gmail.com
+    username: LOGIN
+    password: PASSWORD
+    port: 587
+    protocol: smtp
+    test-connection: true
+
+blog-engine:
+  properties:
+    title: Title
+    subtitle: "Title Subtitle"
+    phone: "+7 999 999-99-99"
+    email: default@email.com
+    copyright: "Topchiy Grigoriy"
+    copyrightFrom: 2020

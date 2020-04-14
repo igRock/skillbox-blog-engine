@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skillbox.blog_engine.dto.ApiInitResponse;
+import ru.skillbox.blog_engine.config.AppProperties;
 import ru.skillbox.blog_engine.dto.CalendarResponse;
 import ru.skillbox.blog_engine.dto.ModerationRequest;
 import ru.skillbox.blog_engine.dto.ResultResponse;
@@ -35,7 +35,6 @@ import ru.skillbox.blog_engine.services.AuthService;
 import ru.skillbox.blog_engine.services.PostService;
 import ru.skillbox.blog_engine.services.SettingsService;
 import ru.skillbox.blog_engine.services.StatisticsService;
-import ru.skillbox.blog_engine.services.StorageService;
 import ru.skillbox.blog_engine.services.TagService;
 
 @RestController
@@ -49,42 +48,34 @@ public class ApiGeneralController {
     private StatisticsService statisticsService;
     @Autowired
     private PostService postService;
+    @Autowired
+    private AppProperties appProperties;
 
     @Autowired
     private TagService tagService;
 
-    public ApiGeneralController(AuthService authService,
-                                SettingsService settingsService,
+    public ApiGeneralController(AuthService authService, SettingsService settingsService,
                                 StatisticsService statisticsService,
                                 PostService postService,
+                                AppProperties appProperties,
                                 TagService tagService) {
         this.authService = authService;
         this.settingsService = settingsService;
         this.statisticsService = statisticsService;
         this.postService = postService;
+        this.appProperties = appProperties;
         this.tagService = tagService;
     }
 
     @GetMapping("/init")
-    public ResponseEntity<ApiInitResponse> getApiInit() {
-        ApiInitResponse response = new ApiInitResponse();
-        response.setCopyright("Jack Jones");
-        response.setCopyrightFrom("2020");
-        response.setEmail("jackjones@mail.ru");
-        response.setPhone("+79999999999");
-        response.setSubtitle("SubTitle");
-        response.setTitle("Title");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> getApiInit() {
+        return new ResponseEntity<>(appProperties.getProperties(), HttpStatus.OK);
     }
 
     @GetMapping("/tag")
     public ResponseEntity<TagsResponse> getTags(@RequestParam(required = false) String query) {
-        List<TagDto> tagDtoList;
-        if (query == null) {
-            tagDtoList = tagService.getAllTagDtoList();
-        } else {
-            tagDtoList = tagService.getTagDtoListByQuery(query);
-        }
+        List<TagDto> tagDtoList = query == null ? tagService.getAllTagDtoList() :
+                                  tagService.getTagDtoListByQuery(query);
         TagsResponse tagsResponse = new TagsResponse();
         tagsResponse.setTags(tagDtoList);
         return new ResponseEntity<>(tagsResponse, HttpStatus.OK);
@@ -110,8 +101,7 @@ public class ApiGeneralController {
         if (postModerator != null && !postModerator.equals(user)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        Decision decision = Decision.valueOf(moderationRequest.getDecision().toUpperCase());
-        ModerationStatus status = (decision.equals(Decision.ACCEPT)) ?
+        ModerationStatus status = (moderationRequest.getDecision().equals(Decision.ACCEPT)) ?
                                   ModerationStatus.ACCEPTED : ModerationStatus.DECLINED;
         post.setModerationStatus(status);
         post.setModeratedBy(user);
