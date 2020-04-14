@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/blog_engine?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:${CLEARDB_DATABASE_URL:mysql://localhost:3306/blog_engine}?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password: Uhbghjcnuhb12
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -26,3 +26,6 @@ blog-engine:
     email: default@email.com
     copyright: "Topchiy Grigoriy"
     copyrightFrom: 2020
+
+server:
+  port: ${PORT:8080}
