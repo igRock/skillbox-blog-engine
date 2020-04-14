@@ -1,9 +1,12 @@
 package ru.skillbox.blog_engine.enums;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.core.convert.converter.Converter;
 
 public enum Decision {
+    @JsonProperty("decline")
     DECLINE,
+    @JsonProperty("accept")
     ACCEPT;
 
     private static final Decision[] values = Decision.values();
