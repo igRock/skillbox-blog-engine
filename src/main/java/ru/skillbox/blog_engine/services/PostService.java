@@ -205,7 +205,7 @@ public class PostService {
         if (isActive) {
             postList = postList.stream().filter(p -> p.getIsActive() &&
                 moderationStatus.equals(p.getModerationStatus()) &&
-                p.getTime().isBefore(LocalDateTime.now().plusHours(3)))
+                p.getTime().isBefore(LocalDateTime.now()))
                 .collect(Collectors.toList());
         }
         return postList;
