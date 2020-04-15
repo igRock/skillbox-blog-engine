@@ -118,7 +118,7 @@ public class PostService {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
         return getPostsResponse(offset, limit, null, null, null,
-                                null, authorizedUser, status, true);
+                                null, null, status, true);
     }
 
     public ResponseEntity<ResultResponse> addNewPost(PostRequest request) {
