@@ -205,7 +205,7 @@ public class PostService {
         if (isActive) {
             postList = postList.stream().filter(p -> p.getIsActive() &&
                 moderationStatus.equals(p.getModerationStatus()) &&
-                p.getTime().isBefore(LocalDateTime.now()))
+                p.getTime().isBefore(LocalDateTime.now().plusHours(3)))
                 .collect(Collectors.toList());
         }
         return postList;
@@ -214,7 +214,7 @@ public class PostService {
     public List<Post> searchByDate(List<Post> list, LocalDateTime dateFrom, LocalDateTime dateTo) {
         return list.stream()
             .filter(post -> post.getTime().isAfter(dateFrom) &&
-                post.getTime().isBefore(dateTo))
+                post.getTime().isBefore(dateTo.plusHours(3)))
             .collect(Collectors.toList());
     }
 
