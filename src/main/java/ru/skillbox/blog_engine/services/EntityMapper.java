@@ -1,5 +1,6 @@
 package ru.skillbox.blog_engine.services;
 
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import ru.skillbox.blog_engine.dto.*;
 import ru.skillbox.blog_engine.model.Post;
@@ -68,7 +69,9 @@ public class EntityMapper {
         plainPostDto.setViewCount(post.getViewCount());
         plainPostDto.setTime(post.getTime());
         plainPostDto.setUser(userToUserDto(post.getUser()));
-        String announce = post.getText().length() > 150 ? post.getText().substring(0, 150) + "..." : post.getText();
+
+        String postText = Jsoup.parse(post.getText()).text();
+        String announce = postText.length() > 150 ? postText.substring(0, 150) + "..." : postText;
         plainPostDto.setAnnounce(announce);
         plainPostDto.setDislikeCount(post.getPostVotes().stream()
                 .filter(item -> item.getValue() < 0)

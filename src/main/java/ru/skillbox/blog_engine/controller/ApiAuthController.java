@@ -90,7 +90,7 @@ public class ApiAuthController {
     @GetMapping("/check")
     public ResponseEntity<AuthResponse> authCheck() {
         if (authService.getAuthorizedUser().isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
         AuthResponse response = new AuthResponse();
         Optional<User> authorizedUser = authService.getAuthorizedUser();
