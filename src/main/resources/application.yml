@@ -12,8 +12,8 @@ spring:
 
   mail:
     host: smtp.gmail.com
-    username: ${EMAIL_LOGIN:LOGIN}
-    password: ${EMAIL_PASSWORD:PASSWORD}
+    username: none.like.everyone.else@gmail.com
+    password: NotLikeEveryoneElse
     port: 587
     protocol: smtp
     test-connection: true
