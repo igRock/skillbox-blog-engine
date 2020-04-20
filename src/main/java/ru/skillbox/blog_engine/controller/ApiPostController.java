@@ -41,6 +41,8 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam SortMode mode) {
+        // Не хорошо писать метод с таким количеством null аргументов, перегрузить метод
+        // Но правильней все эти опции вынести на уровень репозитория и брать данные отфильтрованные уже в базе
         return postService.getPostsResponse(offset, limit, mode, null, null,
                 null, null, null, true);
     }
@@ -50,6 +52,7 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam String query) {
+        // Не хорошо писать метод с таким количеством null аргументов, перегрузить метод
         return postService.getPostsResponse(offset, limit, null, query, null,
                 null, null, null, true);
     }
@@ -64,6 +67,7 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
+        // Не хорошо писать метод с таким количеством null аргументов, перегрузить метод
         return postService.getPostsResponse(offset, limit, null, null,
                                                 LocalDateTime.of(date, LocalTime.MIDNIGHT), null, null, null, true);
     }
@@ -73,6 +77,7 @@ public class ApiPostController {
             @RequestParam Integer offset,
             @RequestParam Integer limit,
             @RequestParam String tag) {
+        // Не хорошо писать метод с таким количеством null аргументов, перегрузить метод
         return postService.getPostsResponse(offset, limit, null, null,
                 null, tag, null, null, true);
     }

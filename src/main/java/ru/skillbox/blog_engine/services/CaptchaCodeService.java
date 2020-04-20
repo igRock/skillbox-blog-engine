@@ -61,6 +61,7 @@ public class CaptchaCodeService {
         return dbCaptcha != null && userCaptcha.equals(dbCaptcha.getCode());
     }
 
+    // Слишком сложный рандом. Переписать на использование какой-нибкудь либы
     private String getRandomCode(final Integer length) {
         final int LEFT = 48;             // '0'
         final int RIGHT = 122;           // 'z'
@@ -82,6 +83,7 @@ public class CaptchaCodeService {
             baos.flush();
             result = new String(Base64.getEncoder().encode(baos.toByteArray()), StandardCharsets.UTF_8);
         } catch (IOException e) {
+            // Убрать - выбросить RuntimeException
             e.printStackTrace();
         }
         return result;

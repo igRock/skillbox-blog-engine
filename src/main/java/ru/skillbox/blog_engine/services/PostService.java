@@ -59,6 +59,7 @@ public class PostService {
                                                           ModerationStatus status,
                                                           Boolean isActive) {
         status = status == null ? ModerationStatus.ACCEPTED : status;
+        // Фильтровать все в базе. при помощи JPQL
         List<Post> postList = getAllPostsFromRepository(isActive, status);
         if (searchQuery != null) {
             postList = searchByQuery(postList, searchQuery);
@@ -97,6 +98,7 @@ public class PostService {
         return ResponseEntity.ok(result);
     }
 
+    //Переписать на Sprind Data запрос или JPQL
     public ResponseEntity<PostsResponse> getMyPosts(Integer offset, Integer limit, PostModerationStatus status) {
         Optional<User> userOptional = authService.getAuthorizedUser();
         if (userOptional.isEmpty()) {
@@ -108,6 +110,7 @@ public class PostService {
                                 null, authorizedUser, status.getModerationStatus(), status.isActive());
     }
 
+    //Переписать на Sprind Data запрос или JPQL
     public ResponseEntity<PostsResponse> getModeratedPosts(Integer offset, Integer limit, ModerationStatus status) {
         Optional<User> userOptional = authService.getAuthorizedUser();
         if (userOptional.isEmpty()) {
@@ -177,10 +180,12 @@ public class PostService {
     private PostsResponse formPostsResponse(Integer offset, Integer limit, List<PlainPostDto> posts) {
         PostsResponse postsResponse = new PostsResponse();
         postsResponse.setCount(posts.size());
+        // Пагинация через Spring Data переписать
         postsResponse.setPosts(offsetList(offset, limit, posts));
         return postsResponse;
     }
 
+    // Сортировать в базе
     private List<PlainPostDto> sortPlainPostDtoListByMode(List<PlainPostDto> list, SortMode mode) {
         switch (mode) {
             case BEST:
@@ -201,6 +206,7 @@ public class PostService {
 
     public List<Post> getAllPostsFromRepository(boolean isActive, ModerationStatus moderationStatus){
         List<Post> postList = new ArrayList<>();
+        // Сразу в стриме collect to List
         postRepository.findAll().forEach(postList::add);
         if (isActive) {
             postList = postList.stream().filter(p -> p.getIsActive() &&
@@ -211,6 +217,7 @@ public class PostService {
         return postList;
     }
 
+    //Переписать на Sprind Data запрос или JPQL
     public List<Post> searchByDate(List<Post> list, LocalDateTime dateFrom, LocalDateTime dateTo) {
         return list.stream()
             .filter(post -> post.getTime().isAfter(dateFrom) &&
@@ -240,6 +247,7 @@ public class PostService {
         return postRepository.getFirstPostDateByUser(user);
     }
 
+    // Пагинация через Spring Data переписать
     private <T> List offsetList(Integer offset, Integer limit, List<T> list) {
         if (list.isEmpty() || offset > list.size()) {
             return Collections.EMPTY_LIST;
@@ -247,6 +255,7 @@ public class PostService {
         return list.subList(offset, limit + offset <= list.size() ? limit + offset : list.size());
     }
 
+    //Переписать на Sprind Data запрос или JPQL
     private List<Post> searchByTag(List<Post> postList, String tagQuery) {
         return postList.stream()
                 .filter(post -> post.getTags().stream()
@@ -255,12 +264,14 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    //Переписать на Sprind Data запрос или JPQL
     private List<Post> searchByUser(List<Post> list, User user) {
         return list.stream()
                 .filter(post -> post.getUser().equals(user))
                 .collect(Collectors.toList());
     }
 
+    //Переписать на Sprind Data запрос или JPQL
     private List<Post> searchByQuery(List<Post> list, String query) {
         if (query == null || "".equals(query)) {
             return list;

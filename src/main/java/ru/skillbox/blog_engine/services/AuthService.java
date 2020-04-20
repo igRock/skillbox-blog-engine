@@ -69,7 +69,9 @@ public class AuthService {
         }
         userFromDB.setCode(code);
         User updatedUser = userRepository.save(userFromDB);
+        // Вынести в конфиг
         final String port = environment.getProperty("local.server.port");
+        // Вынести в конфиг
         final String hostName = InetAddress.getLoopbackAddress().getHostName();
         final String url = String.format("http://%s:%s", hostName, port);
 
@@ -92,6 +94,7 @@ public class AuthService {
             return false;
         }
         userFromDB.setCode(null);
+        // нехорошо в базе хранить незакодированный пароль. Нужен encoder/decoder
         userFromDB.setPassword(passwordResetRequest.getPassword());
         userRepository.save(userFromDB);
         return true;
@@ -103,6 +106,7 @@ public class AuthService {
                       request.getEmail().split("@")[0] : request.getName();
         newUser.setName(name);
         newUser.setEmail(request.getEmail());
+        // нехорошо в базе хранить незакодированный пароль. Нужен encoder/decoder
         newUser.setPassword(request.getPassword());
         newUser.setRegTime(LocalDateTime.now());
         newUser.setIsModerator(false);

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "captcha_codes")
 public class CaptchaCode {
+    // Навесить ограничения (количество символов, NotNull и т.д.) на всех сущностях
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

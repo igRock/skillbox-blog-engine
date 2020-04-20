@@ -32,6 +32,7 @@ public class ApiImageController {
     public @ResponseBody byte[] getImage(@PathVariable String dir1,
                                          @PathVariable String dir2,
                                          @PathVariable String fileName) {
+        // Вместо '/' использовать File.separator()
         String route = new File("").getAbsolutePath()
             .concat("/src/main/resources/static/img/upload/" + dir1 + "/" + dir2 + "/" + fileName);
         return storageService.getImageByPath(Path.of(route));
