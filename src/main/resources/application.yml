@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:${CLEARDB_DATABASE_URL:mysql://localhost:3306/blog_engine}?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
-    password: Uhbghjcnuhb12
+    password: password
   jpa:
     hibernate:
       ddl-auto: none
