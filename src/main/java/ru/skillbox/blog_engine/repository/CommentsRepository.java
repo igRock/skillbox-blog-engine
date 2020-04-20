@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface CommentsRepository extends JpaRepository<PostComment, Integer> {
+    // Переписать за JPQL
     List<PostComment> findByPost(Post post);
 }

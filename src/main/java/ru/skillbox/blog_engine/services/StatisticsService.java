@@ -8,8 +8,10 @@ import ru.skillbox.blog_engine.model.User;
 
 @Service
 public class StatisticsService {
+    //  Не используется
     @Autowired
     private AuthService authService;
+    //  Не используется
     @Autowired
     private SettingsService settingsService;
     @Autowired

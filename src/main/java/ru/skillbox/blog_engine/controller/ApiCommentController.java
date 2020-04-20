@@ -38,6 +38,7 @@ public class ApiCommentController {
 
     @PostMapping("")
     public ResponseEntity<ResultResponse> addComment(@RequestBody NewCommentRequest comment) {
+        // Вынести проверку пользователя либо в отдельный метод, либо, проверять авторизован ли пользователь через аоп
         Optional<User> userOptional = authService.getAuthorizedUser();
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -64,6 +65,7 @@ public class ApiCommentController {
         } else {
             result.setResult(false);
         }
+        // ResponseEntity.ok вроде как чище смотрится. Это относится ко всем ResponseEntity
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

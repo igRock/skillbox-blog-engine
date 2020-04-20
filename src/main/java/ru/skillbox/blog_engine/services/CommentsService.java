@@ -30,6 +30,7 @@ public class CommentsService {
         newComment.setPost(post);
         newComment.setText(text);
         newComment.setTime(LocalDateTime.now());
+        // Сразу return
         PostComment savedComment = commentsRepository.save(newComment);
         return savedComment;
     }

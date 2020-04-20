@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class EntityMapper {
+    // Заменить на Mapstruct весь маппер
 
     public UserWithPhotoDto userToUserWithPhotoDto(User user) {
         UserWithPhotoDto userWithPhotoDto = new UserWithPhotoDto();

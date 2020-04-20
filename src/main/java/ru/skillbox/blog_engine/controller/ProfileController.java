@@ -39,7 +39,6 @@ public class ProfileController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-
     public ResponseEntity<ResultResponse> updateProfile(@RequestBody ProfileDto profileData) {
         Optional<User> userOptional = authService.getAuthorizedUser();
         if (userOptional.isEmpty()) {

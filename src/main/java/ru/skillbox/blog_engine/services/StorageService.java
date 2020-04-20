@@ -16,6 +16,7 @@ public class StorageService {
     private Random random = new Random();
 
     public String store(MultipartFile file){
+        // Вместо / File.separator
         String prefix = "/static";
         String absolutePathToFolder =
             "/img/upload/" + generatePathPart() + "/" + generatePathPart() + "/";
@@ -49,6 +50,7 @@ public class StorageService {
         }
     }
 
+    // Найти нормальный рандом
     private String generatePathPart(){
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'

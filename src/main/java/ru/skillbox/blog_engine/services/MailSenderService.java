@@ -23,6 +23,7 @@ public class MailSenderService {
 
     public void send(String recipientEmail, String subject, String msg) throws MessagingException {
         Properties properties = System.getProperties();
+        // Вынести свойства в конфиг
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");

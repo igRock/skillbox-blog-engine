@@ -27,6 +27,7 @@ public class TagService {
         this.entityMapper = entityMapper;
     }
 
+    // Переписать на Spring Data или на JPQL
     public List<TagDto> getTagDtoListByQuery(String query) {
         return getAllTagDtoList().stream()
                 .filter(tag -> tag.getName().toLowerCase().startsWith(query.toLowerCase()))
@@ -35,10 +36,12 @@ public class TagService {
 
     private List<Tag> getAllTagsFromRepository() {
         List<Tag> tagList = new ArrayList<>();
+        // Сразу в стриме collect to List
         tagRepository.findAll().forEach(tagList::add);
         return tagList;
     }
 
+    // Переписать на Spring Data или на JPQL
     public List<TagDto> getAllTagDtoList() {
         List<Post> allPostList = postService.getAllPostsFromRepository(true, ModerationStatus.ACCEPTED);
         List<Tag> allTagList = getAllTagsFromRepository();

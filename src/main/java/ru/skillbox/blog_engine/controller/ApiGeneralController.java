@@ -101,6 +101,7 @@ public class ApiGeneralController {
         if (postModerator != null && !postModerator.equals(user)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
+        // наоборот Decision.ACCEPT.equals(...) чтобы не было NPE
         ModerationStatus status = (moderationRequest.getDecision().equals(Decision.ACCEPT)) ?
                                   ModerationStatus.ACCEPTED : ModerationStatus.DECLINED;
         post.setModerationStatus(status);
@@ -161,6 +162,7 @@ public class ApiGeneralController {
         Map<String, Long> postsCountPerYear = postList.stream()
             .collect(Collectors.groupingBy(p -> p.getTime().toString().split("T")[0],
                                            Collectors.counting()));
+        // Переписать на Set.
         List<Integer> postYears = postList.stream()
             .map(p -> p.getTime().getYear())
             .collect(Collectors.toList());

@@ -8,9 +8,9 @@ import java.util.Map;
 
 @Component
 public class AppConfig {
+    // Непотокобезопасно. Переписать на потокобезопасную мапу, а лучше на Spring Security
     private final Map<String, Integer> sessions = new HashMap<>();
     private final Captcha captcha = new Captcha();
-
 
     public void addSession(String sessionId, Integer userId) {
         sessions.put(sessionId, userId);
@@ -34,6 +34,7 @@ public class AppConfig {
 
     @Data
     public static class Captcha {
+        // Вынести в конфиг в @ConfigurationProperties(prefix = "captcha")
         private Integer codeLength = 4;
         private Integer hoursToBeUpdated = 1;
     }
